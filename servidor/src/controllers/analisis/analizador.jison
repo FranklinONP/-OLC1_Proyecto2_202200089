@@ -4,8 +4,10 @@ const Tipo = require('./simbolo/Tipo')
 const Nativo = require('./expresiones/Nativo')
 const Aritmeticas = require('./expresiones/Aritmeticas')
 const AccesoVar = require('./expresiones/AccesoVar')
+const Errores = require('./excepciones/Errores')  
 
 const Print = require('./instrucciones/Print')
+const Println = require('./instrucciones/Println')
 const Declaracion = require('./instrucciones/Declaracion')
 const AsignacionVar = require('./instrucciones/AsignacionVar')
 %}
@@ -23,12 +25,16 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 
 
 //palabras reservadas
-"imprimir"              return 'IMPRIMIR'
+"cout"                  return 'COUT'
 "int"                   return 'INT'
 "double"                return 'DOUBLE'
 "string"                return 'STRING'
+"std"                   return 'STD'
 
 // simbolos del sistema
+"<<"                    return "APERTURA_COUT"
+"endl"                  return "ENDL"
+":"                     return "DOSPUNTOS"
 ";"                     return "PUNTOCOMA"
 "+"                     return "MAS"
 "-"                     return "MENOS"
@@ -43,6 +49,9 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 //blancos
 [\ \r\t\f\t]+           {}
 [\ \n]                  {}
+
+// Errores Lexicos
+.   {console.log("Se encontro un error lexico: "+ yytext)} // Captura cualquier otro carácter no reconocido
 
 // simbolo de fin de cadena
 <<EOF>>                 return "EOF"
@@ -63,38 +72,38 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 
 %%
 
-INICIO : INSTRUCCIONES EOF                  {return $1;}
+INICIO : instrucciones EOF                  {return $1;}
 ;
 
-INSTRUCCIONES : INSTRUCCIONES INSTRUCCION   {$1.push($2); $$=$1;}
-              | INSTRUCCION                 {$$=[$1];}
+instrucciones : instrucciones instruccion   {$1.push($2); $$=$1;}
+              | instruccion                 {$$=[$1];}
 ;
 
-INSTRUCCION : IMPRESION PUNTOCOMA            {$$=$1;}
-            | DECLARACION PUNTOCOMA          {$$=$1;}
-            | ASIGNACION PUNTOCOMA           {$$=$1;}
+instruccion : impresion             {$$=$1;}
+            | declaracion          {$$=$1;}
+            | asignacion          {$$=$1;}
 ;
 
-IMPRESION : IMPRIMIR PAR1 EXPRESION PAR2    {$$= new Print.default($3, @1.first_line, @1.first_column);}
+impresion :   COUT APERTURA_COUT expresion PUNTOCOMA         {$$= new Print.default($3, @1.first_line, @1.first_column);}
+            | COUT APERTURA_COUT expresion ENDL PUNTOCOMA    {$$= new Println.default($3, @1.first_line, @1.first_column);}
 ;
 
-DECLARACION : TIPOS ID IGUAL EXPRESION      {$$ = new Declaracion.default($1, @1.first_line, @1.first_column, $2, $4);}
+declaracion : tipos ID IGUAL expresion PUNTOCOMA      {$$ = new Declaracion.default($1, @1.first_line, @1.first_column, $2, $4);}
 ;
 
-ASIGNACION : ID IGUAL EXPRESION             {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
+asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
 ;
 
-EXPRESION : EXPRESION MAS EXPRESION          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.SUMA, @1.first_line, @1.first_column, $1, $3);}
-          | EXPRESION MENOS EXPRESION        {$$ = new Aritmeticas.default(Aritmeticas.Operadores.RESTA, @1.first_line, @1.first_column, $1, $3);}
-          | PAR1 EXPRESION PAR2              {$$ = $2;}
-          | MENOS EXPRESION %prec UMENOS     {$$ = new Aritmeticas.default(Aritmeticas.Operadores.NEG, @1.first_line, @1.first_column, $2);}
+expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.SUMA, @1.first_line, @1.first_column, $1, $3);}
+          | expresion MENOS expresion        {$$ = new Aritmeticas.default(Aritmeticas.Operadores.RESTA, @1.first_line, @1.first_column, $1, $3);}
+          | MENOS expresion %prec UMENOS     {$$ = new Aritmeticas.default(Aritmeticas.Operadores.NEG, @1.first_line, @1.first_column, $2);}
           | ENTERO                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.ENTERO), $1, @1.first_line, @1.first_column );}
           | DECIMAL                          {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.DECIMAL), $1, @1.first_line, @1.first_column );}
           | CADENA                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CADENA), $1, @1.first_line, @1.first_column );}
           | ID                               {$$ = new AccesoVar.default($1, @1.first_line, @1.first_column);}      
 ;
 
-TIPOS : INT             {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
-      | DOUBLE          {$$ = new Tipo.default(Tipo.tipoDato.DECIMAL);}
-      | STRING          {$$ = new Tipo.default(Tipo.tipoDato.CADENA);}
+tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
+      | DOUBLE                                  {$$ = new Tipo.default(Tipo.tipoDato.DECIMAL);}
+      | STD DOSPUNTOS DOSPUNTOS STRING          {$$ = new Tipo.default(Tipo.tipoDato.CADENA);}
 ;
