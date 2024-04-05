@@ -55,18 +55,18 @@ function App() {
         
 
       <div class="container">
-  <div class="row d-flex justify-content-between">
-    <div class="col">
-      <label for="file" class="btn btn-primary btn-lg">
-        Seleccionar Archivo
-        <input type="file" id="file" class="d-none" onChange={CargarArchivo} />
-      </label>
-    </div>
-    <div class="col">
-      <input type="button" value="Interpretar" id="btnCargar"  class="btn btn-primary btn-lg" onClick={interpretar} />
-    </div>
-  </div>
-</div>
+        <div class="row d-flex justify-content-between">
+          <div class="col">
+            <label for="file" class="btn btn-primary btn-lg">
+              Seleccionar Archivo
+              <input type="file" id="file" class="d-none" onChange={CargarArchivo} />
+            </label>
+          </div>
+          <div class="col">
+            <input type="button" value="Ejecutar" id="btnCargar"  class="btn btn-primary btn-lg" onClick={interpretar} />
+          </div>
+        </div>
+      </div>
 
 
         

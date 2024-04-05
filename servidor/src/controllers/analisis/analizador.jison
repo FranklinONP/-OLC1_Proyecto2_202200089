@@ -16,6 +16,11 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 %options case-insensitive
 
 %%
+\/\*[\s\S]*?\*\/        {}   /* Capturar comentarios multilinea */
+\/\/.*(?:\r?\n|$)       {}   /* Capturar comentarios de línea */
+
+
+
 
 //palabras reservadas
 "imprimir"              return 'IMPRIMIR'
