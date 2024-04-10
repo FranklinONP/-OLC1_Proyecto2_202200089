@@ -1,5 +1,5 @@
 %{
-// codigo de JS si fuese necesario
+// codigo de JS si fuese necesario de Franklin
 const Tipo = require('./simbolo/Tipo')
 const Nativo = require('./expresiones/Nativo')
 const Aritmeticas = require('./expresiones/Aritmeticas')
@@ -10,6 +10,13 @@ const Print = require('./instrucciones/Print')
 const Println = require('./instrucciones/Println')
 const Declaracion = require('./instrucciones/Declaracion')
 const AsignacionVar = require('./instrucciones/AsignacionVar')
+//Arreglos
+const AccesoArreglo = require('./expresiones/AccesoArreglo')
+const declaracionArreglo = require('./instrucciones/declaracionArreglo')
+const AsignacionArreglo = require('./instrucciones/AsignacionArreglo')
+
+const declaracionMatriz = require('./instrucciones/declaracionMatriz')
+const AccesoMatriz = require('./expresiones/AccesoMatriz')
 
 %}
 
@@ -28,10 +35,12 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 "double"                return 'DOUBLE'
 "string"                return 'STRING'
 "std"                   return 'STD'
-"tolower"               return 'TOLOWER'
 "Bool"                  return 'BOOL'
 "char"                  return 'CHAR'
-
+"new"                   return 'NEW'
+//Funciones
+"tolower"               return 'TOLOWER'
+"toupper"               return 'TOUPPER'
 // simbolos del sistema
 "!="                    return "DIFERENTE"
 "<<"                    return "APERTURA_COUT"
@@ -41,6 +50,8 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 ">"                     return "MAYOR"
 "=="                    return "IGUALIGUAL"
 "="                     return "IGUAL"
+"["                     return "CORCHETE1"
+"]"                     return "CORCHETE2"
 "endl"                  return "ENDL"
 ":"                     return "DOSPUNTOS"
 ";"                     return "PUNTOCOMA"
@@ -77,15 +88,11 @@ const AsignacionVar = require('./instrucciones/AsignacionVar')
 /lex
 
 //precedencias
-//%left 'DOBIGUAL' 'NOTIGUAL'
-//%left 'MENORQ' 'MENORIQ' 'MAYORQ' 'MAYORIQ'
-//%left 'MAS' 'MENOS'
-//%left "MULT" "DIV" "MOD"
-//%right 'UMENOS'
 %left 'IGUALIGUAL' 'DIFERENTE'
 %left 'MENOR' 'MENORIGUAL' 'MAYOR' 'MAYORIGUAL'
 %left 'MAS' 'MENOS'
 %left 'POR' 'DIV' 'MOD'
+%left  'arreglos' 'declaraciones'
 %right 'UMENOS'
 
 // simbolo inicial
@@ -100,29 +107,48 @@ instrucciones : instrucciones instruccion   {$1.push($2); $$=$1;}
               | instruccion                 {$$=[$1];}
 ;
 
-instruccion : impresion             {$$=$1;}
+instruccion : arreglos               {$$=$1;}
+            | impresion             {$$=$1;}
             | declaracion          {$$=$1;}
             | asignacion          {$$=$1;}
-            | minuscula           {$$=$1;}
 ;
 
 impresion :   COUT APERTURA_COUT expresion PUNTOCOMA         {$$= new Print.default($3, @1.first_line, @1.first_column);}
             | COUT APERTURA_COUT expresion ENDL PUNTOCOMA    {$$= new Println.default($3, @1.first_line, @1.first_column);}
 ;
+//Declaracion de arreglos
+arreglos:   tipos ID CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 PUNTOCOMA{$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,null,$9);}
+          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 CORCHETE1 expresion CORCHETE2 PUNTOCOMA{console.log("Reconocio2");} // M 
+          | tipos ID CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido CORCHETE2 PUNTOCOMA {$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,$7,null);}
+          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido2 CORCHETE2 PUNTOCOMA {$$=new declaracionMatriz.default($1, @1.first_line, @1.first_column,$2,$9,null);}
+;
+ contenido2: contenido2 COMA CORCHETE1 contenido CORCHETE2   {$1.push($4); $$=$1;}
+          | CORCHETE1 contenido CORCHETE2{$$=[$2];}
+;
 
+contenido:  contenido COMA expresion {$1.push($3); $$=$1;}
+           | expresion{$$=[$1];}
+;
 //===================================================================
 //Declaracion General
-declaracion : tipos declaracionesRecursivas cuerpoDeclaracion {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$3);};
+declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,null,null);}
+            |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);}
+            |tipos declaracionesRecursivas IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toLower");}   
+            |tipos declaracionesRecursivas IGUAL TOUPPER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toUpper");}
+;
 
 // Recursividad para declarar
 declaracionesRecursivas: declaracionesRecursivas COMA ID   {$1.push($3); $$=$1;}
                         | ID {$$=[$1];};
 //Especifico o por default
 cuerpoDeclaracion:      IGUAL expresion PUNTOCOMA  {$$=$2;}
+                      //  | IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$=$4.toLowerCase();}  
                         | PUNTOCOMA               {$$=null;};
 
-//===================================================================
+//Asignacion de variables
 asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
+              | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA {$$ = new AsignacionArreglo.default($1, $6,@1.first_line, @1.first_column);}
+              | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA //{$$ = new AsignacionMatriz.default($1, @1.first_line, @1.first_column);}
 ;
 
 expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.SUMA, @1.first_line, @1.first_column, $1, $3);}
@@ -137,6 +163,8 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | BOOL                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL),$1, @1.first_line, @1.first_column );}   
           | CHAR                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CARACTER),$1, @1.first_line, @1.first_column );} 
           | ID                               {$$ = new AccesoVar.default($1, @1.first_line, @1.first_column);}  
+          | ID CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoArreglo.default($1, @1.first_line, @1.first_column,$3);}
+          | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoMatriz.default($1, @1.first_line, @1.first_column,$3,$6);}
 ;
 
 tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
@@ -146,3 +174,4 @@ tipos : INT                                     {$$ = new Tipo.default(Tipo.tipo
       | CHAR                                    {$$ = new Tipo.default(Tipo.tipoDato.CARACTER);}
 
 ;
+

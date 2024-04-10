@@ -10,11 +10,13 @@ export default class Declaracion extends Instruccion {
     //let heroes: string[];
     private identificador: string[];
     private valor: Instruccion
+    private funcion: string
 
-    constructor(tipo: Tipo, linea: number, col: number, id: string [], valor: Instruccion) {
+    constructor(tipo: Tipo, linea: number, col: number, id: string [], valor: Instruccion,funcion:string) {
         super(tipo, linea, col)
         this.identificador = id
         this.valor = valor
+        this.funcion = funcion
     }
     
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
@@ -75,6 +77,11 @@ export default class Declaracion extends Instruccion {
 
             this.identificador.forEach(elemento => {
                     //Aca debe ir el ciclo para setear a los ids que traiga
+            if(this.funcion == "toLower"){
+                valorFinal = valorFinal.toString().toLowerCase()
+            }else if(this.funcion == "toUpper"){
+                valorFinal = valorFinal.toString().toUpperCase()
+            }
             if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
                 return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
             }   
