@@ -41,6 +41,10 @@ const AccesoMatriz = require('./expresiones/AccesoMatriz')
 //Funciones
 "tolower"               return 'TOLOWER'
 "toupper"               return 'TOUPPER'
+"round"                 return 'ROUND'
+"length"                return 'LENGTH'
+"typeof"                return 'TYPEOF'
+"tostring"              return 'TOSTRING'
 // simbolos del sistema
 "!="                    return "DIFERENTE"
 "<<"                    return "APERTURA_COUT"
@@ -135,6 +139,11 @@ declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.defau
             |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);}
             |tipos declaracionesRecursivas IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toLower");}   
             |tipos declaracionesRecursivas IGUAL TOUPPER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toUpper");}
+            |tipos declaracionesRecursivas IGUAL ROUND PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"round");}
+            |tipos declaracionesRecursivas IGUAL LENGTH PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"length");}
+            |tipos declaracionesRecursivas IGUAL TYPEOF PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"typeof");}
+            |tipos declaracionesRecursivas IGUAL TOSTRING PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toString");}
+            //falta es ctr
 ;
 
 // Recursividad para declarar
