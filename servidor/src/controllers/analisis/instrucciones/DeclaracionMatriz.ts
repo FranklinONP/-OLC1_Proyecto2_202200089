@@ -33,9 +33,6 @@ export default class DeclaracionMatriz extends Instruccion {
                     if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador, arregloVacio, this.tamano))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     }  
-
-
-
              }
         } else {
             switch (this.tipoDato.getTipo()) {

@@ -27,22 +27,27 @@ export default class DeclaracionArreglo extends Instruccion {
                 case tipoDato.ENTERO:
                     ///pasa algo
                     let arregloVacio: number[] = new Array(this.tamano);
-                    let arreglo: number[] = new Array(5);
-
 
                     //Aca debe ir el ciclo para setear a los ids que traiga
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio, this.tamano))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     }  
-                    
-                    console.log("===========ESTATICO=============")
-                    console.log(arregloVacio);
-                    console.log("---------------------------------")
-                    console.log(arreglo);
-                    console.log("=========================================")
+                case tipoDato.CADENA:
+                    ///pasa algo
+                    let arregloVacio2: string[] = new Array(this.tamano);
 
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio2, this.tamano))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }  
+                case tipoDato.CARACTER:
+                    ///pasa algo
+                    let arregloVacio3: string[] = new Array(this.tamano);
 
-
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio3, this.tamano))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }
              }
         } else {
             switch (this.tipoDato.getTipo()) {

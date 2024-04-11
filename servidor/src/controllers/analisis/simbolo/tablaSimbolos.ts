@@ -10,7 +10,7 @@ export default class tablaSimbolo {
 
     constructor(anterior?: tablaSimbolo) {
         this.tablaAnterior = anterior
-        this.tablaActual = new Map<string, Simbolo>()
+        this.tablaActual = new Map<string, Simbolo|Arreglo|Matriz>()
         this.nombre = ""
     }
 

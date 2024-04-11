@@ -17,6 +17,7 @@ const AsignacionArreglo = require('./instrucciones/AsignacionArreglo')
 
 const declaracionMatriz = require('./instrucciones/declaracionMatriz')
 const AccesoMatriz = require('./expresiones/AccesoMatriz')
+const AsignacionMatriz = require('./instrucciones/AsignacionMatriz')
 
 %}
 
@@ -156,9 +157,10 @@ cuerpoDeclaracion:      IGUAL expresion PUNTOCOMA  {$$=$2;}
 
 //Asignacion de variables
 asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
-              | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA {$$ = new AsignacionArreglo.default($1, $6,@1.first_line, @1.first_column);}
-              | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA //{$$ = new AsignacionMatriz.default($1, @1.first_line, @1.first_column);}
-;
+              | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
+                                                     //{$$ = new AsignacionArreglo.default($1, $6,@1.first_line, @1.first_column);}
+              | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
+                                                     {$$ = new AsignacionMatriz.default($1,$3,$6,$9,@1.first_line, @1.first_column);};
 
 expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.SUMA, @1.first_line, @1.first_column, $1, $3);}
           | expresion MENOS expresion        {$$ = new Aritmeticas.default(Aritmeticas.Operadores.RESTA, @1.first_line, @1.first_column, $1, $3);}
@@ -181,6 +183,5 @@ tipos : INT                                     {$$ = new Tipo.default(Tipo.tipo
       | STD DOSPUNTOS DOSPUNTOS STRING          {$$ = new Tipo.default(Tipo.tipoDato.CADENA);}
       | BOOL                                    {$$ = new Tipo.default(Tipo.tipoDato.BOOL);}
       | CHAR                                    {$$ = new Tipo.default(Tipo.tipoDato.CARACTER);}
-
 ;
 

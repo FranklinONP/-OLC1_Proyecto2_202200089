@@ -30,15 +30,11 @@ export default class Matriz {
     }
 
     public getValor(pos1: number,pos2:number) {
-        console.log("======== clase arreglo.ts ===========")
-        console.log(this.valor[pos1][pos2].valor)
-        console.log('Valor de la posicion: '+pos1+','+pos2)
-        console.log("======== clase arreglo.ts ===========")
-        return this.valor[pos1][pos2].valor
+        return this.valor[pos1][pos2]
     }
 
-    public setValor(valor: any[][]) {
-        this.valor = valor
+    public setValor(pos1:number,pos2:number,valor:any) {
+        this.valor[pos1][pos2].valor = valor
     }
     
     public getTamano() {

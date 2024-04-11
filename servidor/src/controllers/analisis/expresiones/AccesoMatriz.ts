@@ -21,6 +21,9 @@ export default class AccesoMatriz extends Instruccion {
         let valorVariable: Matriz = tabla.getMatriz(this.id)
         if (valorVariable == null) return new Errores("SEMANTICO", "Acceso invalido", this.linea, this.col)
         this.tipoDato = valorVariable.getTipo()
-        return valorVariable.getValor(this.pos1,this.pos2)
+        console.log("<=============>")
+        console.log(valorVariable.getValor(this.pos1,this.pos2))
+        console.log("<=============>")
+        return valorVariable.getValor(this.pos1,this.pos2).valor
     }
 }
