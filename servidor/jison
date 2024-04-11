@@ -1,0 +1,6 @@
+
+> patroninterpreter@1.0.0 build
+> tsc -w - codigo de ts -
+
+error TS5023: Unknown compiler option '-'.
+error TS5023: Unknown compiler option '-'.

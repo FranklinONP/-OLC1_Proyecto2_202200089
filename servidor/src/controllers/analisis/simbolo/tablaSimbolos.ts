@@ -29,10 +29,17 @@ export default class tablaSimbolo {
     public setTabla(tabla: Map<string, Simbolo|Arreglo|Matriz>) {
         this.tablaActual = tabla
     }
-
-    public getVariable(id: string) {
+/*  public getVariable(id: string) {
         return <Simbolo> this.getTabla().get(id.toLocaleLowerCase())
     }
+*/
+    public getVariable(id: string) {
+        for (let i: tablaSimbolo = this; i != null; i = i.getAnterior()) {
+            let busqueda: Simbolo = <Simbolo>i.getTabla().get(id.toLocaleLowerCase())
+            if (busqueda != null) return busqueda
+        }
+        return null
+    } 
 
     public setVariable(simbolo: Simbolo) {
         let busqueda: Simbolo = <Simbolo>this.getTabla().get(simbolo.getId().toLocaleLowerCase())
