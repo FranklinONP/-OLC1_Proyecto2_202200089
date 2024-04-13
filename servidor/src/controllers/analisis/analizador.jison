@@ -25,6 +25,9 @@ const ElseIf = require('./instrucciones/ElseIf')
 const Else = require('./instrucciones/Else')
 const While = require('./instrucciones/While')
 const Break = require('./instrucciones/Break')
+//switch
+const Switch =require('./instrucciones/Switch')
+const CCase =require('./instrucciones/CCase')
 %}
 
 // analizador lexico
@@ -61,6 +64,7 @@ const Break = require('./instrucciones/Break')
 "else"                  return 'ELSE' 
 "switch"                return 'SWITCH'
 "case"                  return 'CASE'
+"default"               return 'DEFAULT'
 "while"                 return 'WHILE'
 "break"                 return 'BREAK'
 // simbolos del sistema
@@ -140,20 +144,36 @@ instruccion : arreglos                      {$$=$1;}
             | break                         {$$=$1;}
             | switch                        {$$=$1;}
 ;
-//Ifs, Whiles, break
-// If           {$$ = new If.default($3, $6, @1.first_line, @1.first_column);}
-// If Else If   {$$ = new Else.default($3, @1.first_line, @1.first_column);}
-// If           {$$ = new ElseIf.default($4, $7, @1.first_line, @1.first_column);}
-
-if: IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 ELSE LLAVE1 instrucciones LLAVE2 
-            {$$ = new Else.default($3, $6,$10, @1.first_line, @1.first_column);}
-  | IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 ELSE if
-            {$$ = new ElseIf.default($3, $6,$9, @1.first_line, @1.first_column);}
-  | IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 
-            {$$ = new If.default($3, $6, @1.first_line, @1.first_column);}
+// Instruccion If 
+// Else es el general para la instruccion if 
+if      :   IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2
+        {$$ = new Else.default($3, $6,null, @1.first_line, @1.first_column);}
+        |   IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 else
+        {$$ = new Else.default($3, $6,$8, @1.first_line, @1.first_column);}
 ;
 
-switch:  SWITCH;
+else    :   ELSE if
+            { let else_sent = [];else_sent.push($2);$$ = else_sent;}
+        | ELSE LLAVE1 instrucciones LLAVE2
+            { $$ = $3;}
+;
+
+
+switch: SWITCH PAR1 expresion PAR2 LLAVE1 cases LLAVE2 {$$=new Switch.default($3,$6,@1.first_line, @1.first_column);}
+;
+
+cases: cases case {$1.push($2); $$=$1;}
+      | case      {let lista_dec2 = [];lista_dec2.push($1);$$ = lista_dec2;}
+;
+
+case: CASE expresion DOSPUNTOS instrucciones 
+        {$$ = {type: 'Case', expresion: $2, instrucciones: $4, defaultCase: null};}
+    | CASE expresion DOSPUNTOS instrucciones defaultCase
+        {$$ = {type: 'Case', expresion: $2, instrucciones: $4, defaultCase: $5};}
+;
+
+defaultCase: DEFAULT DOSPUNTOS instrucciones{$$=$3;}
+;
 
 //While
 while : WHILE PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2      {$$ = new While.default($3, $6, @1.first_line, @1.first_column );}
