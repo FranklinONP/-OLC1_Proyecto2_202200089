@@ -21,6 +21,8 @@ const AsignacionMatriz = require('./instrucciones/AsignacionMatriz')
 //Funciones
 const Relacionales = require('./expresiones/Relacionales')
 const If = require('./instrucciones/If')
+const ElseIf = require('./instrucciones/ElseIf')
+const Else = require('./instrucciones/Else')
 const While = require('./instrucciones/While')
 const Break = require('./instrucciones/Break')
 %}
@@ -33,7 +35,11 @@ const Break = require('./instrucciones/Break')
 %%
 \/\*[\s\S]*?\*\/        {}   /* Capturar comentarios multilinea */
 \/\/.*(?:\r?\n|$)       {}   /* Capturar comentarios de línea */
-
+//blancos
+[\ \r\t\f\t]+           {}
+[\ \n]                  {}
+//Caracter 
+//["]\\\\[']|[']\\\"[']|[']\\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?["]	return 'CARACTER'
 //palabras reservadas
 "cout"                  return 'COUT'
 "int"                   return 'INT'
@@ -52,6 +58,9 @@ const Break = require('./instrucciones/Break')
 "tostring"              return 'TOSTRING'
 //Ciclicas
 "if"                    return 'IF'
+"else"                  return 'ELSE' 
+"switch"                return 'SWITCH'
+"case"                  return 'CASE'
 "while"                 return 'WHILE'
 "break"                 return 'BREAK'
 // simbolos del sistema
@@ -82,11 +91,11 @@ const Break = require('./instrucciones/Break')
 [0-9]+"."[0-9]+         return "DECIMAL"
 [0-9]+                  return "ENTERO"
 [a-z][a-z0-9_]*         return "ID"
-[\"][^\"]*[\"]          {yytext=yytext.substr(1,yyleng-2); return 'CADENA'}
+[\']((\\\')|[^\'\n])*[\']   {yytext=yytext.substring(1,yyleng-1); return "CARACTER";}
+[\"][^\"]*[\"]              {yytext=yytext.substr(1,yyleng-2); return 'CADENA'}
 
-//blancos
-[\ \r\t\f\t]+           {}
-[\ \n]                  {}
+
+
 
 // Errores Lexicos
 .   {console.log("Se encontro un error lexico: "+ yytext)} // Captura cualquier otro carácter no reconocido
@@ -122,18 +131,31 @@ instrucciones : instrucciones instruccion   {$1.push($2); $$=$1;}
               | instruccion                 {$$=[$1];}
 ;
 
-instruccion : arreglos               {$$=$1;}
-            | impresion             {$$=$1;}
-            | declaracion          {$$=$1;}
-            | asignacion          {$$=$1;}
+instruccion : arreglos                      {$$=$1;}
+            | impresion                     {$$=$1;}
+            | declaracion                   {$$=$1;}
+            | asignacion                    {$$=$1;}
             | if                            {$$=$1;}
             | while                         {$$=$1;}
             | break                         {$$=$1;}
+            | switch                        {$$=$1;}
 ;
 //Ifs, Whiles, break
-if : IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2    {$$ = new If.default($3, $6, @1.first_line, @1.first_column );}
+// If           {$$ = new If.default($3, $6, @1.first_line, @1.first_column);}
+// If Else If   {$$ = new Else.default($3, @1.first_line, @1.first_column);}
+// If           {$$ = new ElseIf.default($4, $7, @1.first_line, @1.first_column);}
+
+if: IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 ELSE LLAVE1 instrucciones LLAVE2 
+            {$$ = new Else.default($3, $6,$10, @1.first_line, @1.first_column);}
+  | IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 ELSE if
+            {$$ = new ElseIf.default($3, $6,$9, @1.first_line, @1.first_column);}
+  | IF PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2 
+            {$$ = new If.default($3, $6, @1.first_line, @1.first_column);}
 ;
 
+switch:  SWITCH;
+
+//While
 while : WHILE PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2      {$$ = new While.default($3, $6, @1.first_line, @1.first_column );}
 ;
 
@@ -194,18 +216,23 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | expresion MOD expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.MODULO, @1.first_line, @1.first_column, $1, $3);}
           | ENTERO                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.ENTERO), $1, @1.first_line, @1.first_column );}
           | DECIMAL                          {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.DECIMAL), $1, @1.first_line, @1.first_column );}
+          | CARACTER                          {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CARACTER),$1, @1.first_line, @1.first_column );}
           | CADENA                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CADENA), $1, @1.first_line, @1.first_column );}
           | BOOL                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL),$1, @1.first_line, @1.first_column );}   
-          | CHAR                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CARACTER),$1, @1.first_line, @1.first_column );} 
           | ID                               {$$ = new AccesoVar.default($1, @1.first_line, @1.first_column);}  
           | ID CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoArreglo.default($1, @1.first_line, @1.first_column,$3);}
           | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoMatriz.default($1, @1.first_line, @1.first_column,$3,$6);}
           //Comparadores
           | TRUE                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL), true, @1.first_line, @1.first_column ); }
           | FALSE                            {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL), false, @1.first_line, @1.first_column ); }
-          | expresion MENOR expresion        {$$ = new Relacionales.default(Relacionales.Relacional.MENOR, $1, $3, @1.first_line, @1.first_column);}
           | PAR1 expresion PAR2              {$$ = $2;}
-;
+          | expresion MENOR expresion        {$$ = new Relacionales.default(Relacionales.Relacional.MENOR, $1, $3, @1.first_line, @1.first_column);}
+          | expresion MENORIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.MENORIGUAL, $1, $3, @1.first_line, @1.first_column);}
+          | expresion MAYOR expresion        {$$ = new Relacionales.default(Relacionales.Relacional.MAYOR, $1, $3, @1.first_line, @1.first_column);}
+          | expresion MAYORIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.MAYORIGUAL, $1, $3, @1.first_line, @1.first_column);}
+          | expresion IGUALIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.IGUALIGUAL, $1, $3, @1.first_line, @1.first_column);}
+          | expresion DIFERENTE expresion     {$$ = new Relacionales.default(Relacionales.Relacional.DIFERENTE, $1, $3, @1.first_line, @1.first_column);}
+;       
 
 tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
       | DOUBLE                                  {$$ = new Tipo.default(Tipo.tipoDato.DECIMAL);}

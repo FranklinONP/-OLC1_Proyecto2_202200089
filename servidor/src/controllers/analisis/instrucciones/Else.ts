@@ -6,21 +6,23 @@ import Tipo, { tipoDato } from "../simbolo/Tipo";
 import Break from "./Break";
 
 
-export default class If extends Instruccion {
+export default class Else extends Instruccion {
     private condicion: Instruccion
     private instrucciones: Instruccion[]
+    private instrucciones2: Instruccion[]
 
 
-    constructor(cond: Instruccion, ins: Instruccion[], linea: number, col: number) {
+    constructor(cond: Instruccion, ins: Instruccion[],ins2:Instruccion[], linea: number, col: number) {
         super(new Tipo(tipoDato.VOID), linea, col)
         this.condicion = cond
         this.instrucciones = ins
-        console.log("Constructor If")
+        this.instrucciones2=ins2
+        console.log("Constructor Else")
 
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        console.log("Entro al interpretar de if")
+        console.log("Entro al interpretar de Else")
         let cond = this.condicion.interpretar(arbol, tabla)
         if (cond instanceof Errores) return cond
 
@@ -38,15 +40,15 @@ export default class If extends Instruccion {
                 let resultado = i.interpretar(arbol, newTabla)
 
             }
+        }else{
+            //Interpretar el else
+            for (let i of this.instrucciones2) {
+                if (i instanceof Break) return i;
+                let resultado = i.interpretar(arbol, newTabla)
+
+            }
         }
 
 
     }
 }
-
-/*
-if(exp){
-    Instrucciones
-}
-
-*/
