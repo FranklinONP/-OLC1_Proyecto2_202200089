@@ -28,6 +28,12 @@ const Break = require('./instrucciones/Break')
 //switch
 const Switch =require('./instrucciones/Switch')
 const CCase =require('./instrucciones/CCase')
+//Do While
+const DoWhile=require('./instrucciones/DoWhile')
+//For
+const For=require('./instrucciones/For')
+//Incremento y decremento
+const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 %}
 
 // analizador lexico
@@ -67,6 +73,10 @@ const CCase =require('./instrucciones/CCase')
 "default"               return 'DEFAULT'
 "while"                 return 'WHILE'
 "break"                 return 'BREAK'
+"do"                    return 'DO'
+"for"                   return 'FOR'
+"++"                    return "INCREMENTO"
+"--"                    return "DECREMENTO"
 // simbolos del sistema
 "{"                     return "LLAVE1"
 "}"                     return "LLAVE2"
@@ -143,6 +153,15 @@ instruccion : arreglos                      {$$=$1;}
             | while                         {$$=$1;}
             | break                         {$$=$1;}
             | switch                        {$$=$1;}
+            | doWhile                       {$$=$1;}
+            | for                           {$$=$1;}
+;
+//for
+for : FOR PAR1 declaracion expresion PUNTOCOMA expresion PAR2 LLAVE1 instrucciones LLAVE2 {$$ = new For.default($3, $4, $6, $9, @1.first_line, @1.first_column); console.log("ent 1");}
+        | FOR PAR1 asignacion  expresion PUNTOCOMA expresion PAR2 LLAVE1 instrucciones LLAVE2  {$$ = new For.default($3, $4, $6, $9, @1.first_line, @1.first_column); console.log("ent 2");}
+;
+//Do while
+doWhile : DO LLAVE1 instrucciones LLAVE2 WHILE PAR1 expresion PAR2  {$$ = new DoWhile.default($7, $3, @1.first_line, @1.first_column);}
 ;
 // Instruccion If 
 // Else es el general para la instruccion if 
@@ -162,8 +181,9 @@ else    :   ELSE if
 switch: SWITCH PAR1 expresion PAR2 LLAVE1 cases LLAVE2 {$$=new Switch.default($3,$6,@1.first_line, @1.first_column);}
 ;
 
-cases: cases case {$1.push($2); $$=$1;}
-      | case      {let lista_dec2 = [];lista_dec2.push($1);$$ = lista_dec2;}
+cases: cases case   {$1.push($2); $$=$1;}
+      | case        {let listCases2 = [];listCases2.push($1);$$ = listCases2;}
+      | defaultCase {$$=  {type: 'Case', expresion:null, instrucciones: null, defaultCase: $1};}
 ;
 
 case: CASE expresion DOSPUNTOS instrucciones 
@@ -178,6 +198,7 @@ defaultCase: DEFAULT DOSPUNTOS instrucciones{$$=$3;}
 //While
 while : WHILE PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2      {$$ = new While.default($3, $6, @1.first_line, @1.first_column );}
 ;
+
 
 break : BREAK PUNTOCOMA    {$$ = new Break.default(@1.first_line, @1.first_column);}
 ;
@@ -202,14 +223,19 @@ contenido:  contenido COMA expresion {$1.push($3); $$=$1;}
 ;
 //===================================================================
 //Declaracion General
-declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,null,null);}
+declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,null,null,null);}
             |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);}
-            |tipos declaracionesRecursivas IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toLower");}   
-            |tipos declaracionesRecursivas IGUAL TOUPPER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toUpper");}
-            |tipos declaracionesRecursivas IGUAL ROUND PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"round");}
-            |tipos declaracionesRecursivas IGUAL LENGTH PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"length");}
-            |tipos declaracionesRecursivas IGUAL TYPEOF PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"typeof");}
-            |tipos declaracionesRecursivas IGUAL TOSTRING PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toString");}
+            //Para los casteos
+            |tipos declaracionesRecursivas IGUAL PAR1 DOUBLE PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$7,null,"double");}
+            |tipos declaracionesRecursivas IGUAL PAR1 INT PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$7,null,"int");}
+            |tipos declaracionesRecursivas IGUAL PAR1 STD DOSPUNTOS DOSPUNTOS STRING PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$10,null,"string");}
+            //Para las funciones
+            |tipos declaracionesRecursivas IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toLower",null);}   
+            |tipos declaracionesRecursivas IGUAL TOUPPER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toUpper",null);}
+            |tipos declaracionesRecursivas IGUAL ROUND PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"round",null);}
+            |tipos declaracionesRecursivas IGUAL LENGTH PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"length",null);}
+            |tipos declaracionesRecursivas IGUAL TYPEOF PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"typeof",null);}
+            |tipos declaracionesRecursivas IGUAL TOSTRING PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toString",null);}
             //falta es ctr
 ;
 
@@ -226,7 +252,10 @@ asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.def
               | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
                                                      //{$$ = new AsignacionArreglo.default($1, $6,@1.first_line, @1.first_column);}
               | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
-                                                     {$$ = new AsignacionMatriz.default($1,$3,$6,$9,@1.first_line, @1.first_column);};
+                                                     {$$ = new AsignacionMatriz.default($1,$3,$6,$9,@1.first_line, @1.first_column);}
+              |  ID INCREMENTO PUNTOCOMA             {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
+              | ID DECREMENTO PUNTOCOMA              {$$ = new IncrementoDecremento.default($1, "--", @1.first_line, @1.first_column );}
+          ;
 
 expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.SUMA, @1.first_line, @1.first_column, $1, $3);}
           | expresion MENOS expresion        {$$ = new Aritmeticas.default(Aritmeticas.Operadores.RESTA, @1.first_line, @1.first_column, $1, $3);}
@@ -252,6 +281,9 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | expresion MAYORIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.MAYORIGUAL, $1, $3, @1.first_line, @1.first_column);}
           | expresion IGUALIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.IGUALIGUAL, $1, $3, @1.first_line, @1.first_column);}
           | expresion DIFERENTE expresion     {$$ = new Relacionales.default(Relacionales.Relacional.DIFERENTE, $1, $3, @1.first_line, @1.first_column);}
+          //Para mientras no necesita punto y coma
+          | ID INCREMENTO                            {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
+          | ID DECREMENTO                            {$$ = new IncrementoDecremento.default($1, "--", @1.first_line, @1.first_column );}
 ;       
 
 tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}

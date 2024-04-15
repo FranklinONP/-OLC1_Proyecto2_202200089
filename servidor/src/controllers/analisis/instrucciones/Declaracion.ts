@@ -11,15 +11,18 @@ export default class Declaracion extends Instruccion {
     private identificador: string[];
     private valor: Instruccion
     private funcion: string
+    private tipo2: string
 
-    constructor(tipo: Tipo, linea: number, col: number, id: string [], valor: Instruccion,funcion:string) {
+    constructor(tipo: Tipo, linea: number, col: number, id: string [], valor: Instruccion,funcion:string,tipo2:string) {
         super(tipo, linea, col)
         this.identificador = id
         this.valor = valor
         this.funcion = funcion
+        this.tipo2=tipo2
     }
     
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
+        //Valor por default
         if (this.valor == null) {
              switch (this.tipoDato.getTipo()) {
                 case tipoDato.ENTERO:
@@ -67,7 +70,79 @@ export default class Declaracion extends Instruccion {
                     ///pasa algo
                     console.log("No se puede declarar una variable de tipo void")
              }
-        } else {
+        }
+        //Casteo
+        else if(this.tipo2){
+            //Trabajo el valor
+            let valorFinal = this.valor.interpretar(arbol, tabla)
+            if (valorFinal instanceof Errores) return valorFinal
+            /*
+            Como estoy casteando no seria error semantico a exepcion de los casteos que no son posibles
+            if (this.valor.tipoDato.getTipo() != this.tipoDato.getTipo()) {
+                return new Errores("SEMANTICO", "No se puede declarar variable", this.linea, this.col)
+            }
+            */ 
+            
+            //en un for debo recorrer
+
+            let tipoPrimario=this.tipoDato.getTipo()
+            
+                 switch (tipoPrimario) {
+                    case tipoDato.ENTERO:
+                            if(this.tipo2=="double"){
+                                console.log("Casteo de int a double")
+                                this.identificador.forEach(elemento => {
+                                console.log(Math.round(valorFinal))
+                                    if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, parseInt(valorFinal)))){
+                                        return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                                    } 
+                                }); 
+                            }else if(this.tipo2=="string"){
+                                let str = valorFinal
+                                    try {
+                                        let numero = parseInt(str);
+                                        if (isNaN(numero)) {
+                                            throw new Error("El string no se puede convertir a un número");
+                                        }
+                                        console.log(numero); // Imprime: el numero casteado
+                                            this.identificador.forEach(elemento => {
+                                                    if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, parseInt(valorFinal)))){
+                                                        return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                                                    } 
+                                                }); 
+                                    } catch (error) {
+                                        console.log("Erro no se pudo hacer el casteo")
+                                    }
+                            }
+                    case tipoDato.DECIMAL:
+                        if(this.tipo2=="int"){
+                            console.log("Casteo de double a int")
+                                this.identificador.forEach(elemento => {
+                                console.log(Math.round(valorFinal))
+                                    if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, parseFloat(valorFinal)))){
+                                        return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                                    } 
+                                }); 
+                        }
+                    case tipoDato.CADENA:
+                        if(this.tipo2=="double"){
+                            console.log("Casteo de double a string")
+                                this.identificador.forEach(elemento => {
+                                    if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal.toString()))){
+                                        return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                                    } 
+                                }); 
+                        }
+                        
+                               
+                }
+                  
+               
+                
+                
+        }
+        //Asignacion normal
+        else {
             let valorFinal = this.valor.interpretar(arbol, tabla)
             if (valorFinal instanceof Errores) return valorFinal
 

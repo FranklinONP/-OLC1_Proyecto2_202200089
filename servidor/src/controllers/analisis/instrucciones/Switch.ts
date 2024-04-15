@@ -1,5 +1,4 @@
 import { Instruccion } from "../abstracto/Instruccion";
-import CCase from './CCase';
 import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
@@ -31,30 +30,35 @@ export default class Switch extends Instruccion {
         let newTabla = new tablaSimbolo(tabla)
         newTabla.setNombre("Sentencia Switch")
         console.log("Impresion del cuerpo del switch")
-        console.log(this.instrucciones)
+        console.log(this.instrucciones.length)
         console.log("---------------------------------")
 
         for (var i = 0; i < this.instrucciones.length; i++) {
             var objeto = this.instrucciones[i];
             var compTemp=objeto.expresion.interpretar(arbol,tabla)
             
-            if (cond==compTemp) {
-                console.log("Condicion: "+cond+" compTemporal: "+compTemp)
-                console.log("Es igual/true")
-                console.log(objeto.defaultCase)
-                for (let i of objeto.instrucciones) {
+            if(compTemp){
+                if (cond==compTemp) {
+                    console.log("Condicion: "+cond+" compTemporal: "+compTemp)
+                    console.log("Es igual/true")
+                    console.log(objeto.defaultCase)
+                        for (let i of objeto.instrucciones) {
+                            if (i instanceof Break) return i;
+                                let resultado = i.interpretar(arbol, newTabla)
+                                if (resultado instanceof Break) return;
+                            } 
+                        }
+                }
+            
+            if(objeto.defaultCase){
+                console.log("Entro al default")
+                for (let i of objeto.defaultCase   ) {
                     if (i instanceof Break) return i;
                     let resultado = i.interpretar(arbol, newTabla)
-
-                } return
-            }else{
-                if(objeto.defaultCase){
-                   for (let i of objeto.defaultCase   ) {
-                    if (i instanceof Break) return i;
-                    let resultado = i.interpretar(arbol, newTabla)
-                    }   
-                }  
-            }   
+                    if (resultado instanceof Break) return;
+                }   
+            }  
+             
         }      
     }
 }

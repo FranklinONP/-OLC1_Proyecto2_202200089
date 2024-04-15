@@ -17,12 +17,10 @@ export default class Else extends Instruccion {
         this.condicion = cond
         this.instrucciones = ins
         this.instrucciones2=ins2
-        console.log("Constructor Else")
 
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        console.log("Entro al interpretar de Else")
         let cond = this.condicion.interpretar(arbol, tabla)
         if (cond instanceof Errores) return cond
 
@@ -38,15 +36,20 @@ export default class Else extends Instruccion {
             for (let i of this.instrucciones) {
                 if (i instanceof Break) return i;
                 let resultado = i.interpretar(arbol, newTabla)
-
+                if (resultado instanceof Break) return;// Se lo acabo de poner
             }
         }else{
             //Interpretar el else
-            for (let i of this.instrucciones2) {
-                if (i instanceof Break) return i;
-                let resultado = i.interpretar(arbol, newTabla)
+            if(this.instrucciones2){
+                for (let i of this.instrucciones2) {
+                                if (i instanceof Break) return i;
+                                let resultado = i.interpretar(arbol, newTabla)
+                                if (resultado instanceof Break) return;
+
+                            }
 
             }
+            
         }
 
 
