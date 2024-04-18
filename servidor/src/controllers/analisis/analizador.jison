@@ -34,6 +34,11 @@ const DoWhile=require('./instrucciones/DoWhile')
 const For=require('./instrucciones/For')
 //Incremento y decremento
 const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
+//TErnario
+const Ternario=require('./instrucciones/Ternario')
+//Logicos
+const ExpLogicas=require('./expresiones/ExpLogicas')
+
 %}
 
 // analizador lexico
@@ -66,6 +71,8 @@ const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 "typeof"                return 'TYPEOF'
 "tostring"              return 'TOSTRING'
 //Ciclicas
+"true"                  return 'TRUE'
+"false"                 return 'FALSE'  
 "if"                    return 'IF'
 "else"                  return 'ELSE' 
 "switch"                return 'SWITCH'
@@ -81,6 +88,10 @@ const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 "{"                     return "LLAVE1"
 "}"                     return "LLAVE2"
 "!="                    return "DIFERENTE"
+"!"                     return "NOT"      ///Not
+"&&"                    return "AND"      ///And
+"||"                    return "OR"       ///Or
+"?"                     return "INTERROGACION"
 "<<"                    return "APERTURA_COUT"
 "<="                    return "MENORIGUAL"                 
 "<"                     return "MENOR"
@@ -112,7 +123,7 @@ const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 
 
 // Errores Lexicos
-.   {console.log("Se encontro un error lexico: "+ yytext)} // Captura cualquier otro carácter no reconocido
+.    {console.log("Se encontro un error lexico: "+ yytext)} // Captura cualquier otro carácter no reconocido
 
 // simbolo de fin de cadena
 <<EOF>>                 return "EOF"
@@ -126,12 +137,27 @@ const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 /lex
 
 //precedencias
-%left 'IGUALIGUAL' 'DIFERENTE'
-%left 'MENOR' 'MENORIGUAL' 'MAYOR' 'MAYORIGUAL'
+//%left 'IGUALIGUAL' 'DIFERENTE'
+//%left 'MENOR' 'MENORIGUAL' 'MAYOR' 'MAYORIGUAL'
+//%left 'MAS' 'MENOS'
+//%left 'POR' 'DIV' 'MOD'
+//%left  'arreglos' 'declaraciones'
+//%right 'UMENOS'
+//presedencia de los logico
+//%left 'AND'
+//%left 'OR'
+//%right 'NOT'
+
+%left 'INTERROGACION'
+%left 'OR'
+%left 'AND'
+%left 'NOT'
+%left 'MENOR' 'MENORIGUAL' 'MAYOR' 'MAYORIGUAL' 'IGUALIGUAL' 'DIFERENTE'
 %left 'MAS' 'MENOS'
-%left 'POR' 'DIV' 'MOD'
-%left  'arreglos' 'declaraciones'
+%left 'POR' 'DIV'
+%left 'MOD'
 %right 'UMENOS'
+
 
 // simbolo inicial
 %start INICIO
@@ -155,6 +181,9 @@ instruccion : arreglos                      {$$=$1;}
             | switch                        {$$=$1;}
             | doWhile                       {$$=$1;}
             | for                           {$$=$1;}
+;
+//Ternario
+ternario: expresion INTERROGACION expresion DOSPUNTOS expresion PUNTOCOMA {$$=new Ternario.default($1,$3,$5,@1.first_line, @1.first_column);}
 ;
 //for
 for : FOR PAR1 declaracion expresion PUNTOCOMA expresion PAR2 LLAVE1 instrucciones LLAVE2 {$$ = new For.default($3, $4, $6, $9, @1.first_line, @1.first_column); console.log("ent 1");}
@@ -209,10 +238,16 @@ impresion :   COUT APERTURA_COUT expresion PUNTOCOMA         {$$= new Print.defa
             | COUT APERTURA_COUT expresion ENDL PUNTOCOMA    {$$= new Println.default($3, @1.first_line, @1.first_column);}
 ;
 //Declaracion de arreglos
-arreglos:   tipos ID CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 PUNTOCOMA{$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,null,$9);}
-          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 CORCHETE1 expresion CORCHETE2 PUNTOCOMA{console.log("Reconocio2");} // M 
-          | tipos ID CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido CORCHETE2 PUNTOCOMA {$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,$7,null);}
-          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido2 CORCHETE2 PUNTOCOMA {$$=new declaracionMatriz.default($1, @1.first_line, @1.first_column,$2,$9,null);}
+// 1D = tipo-fila-columna-id-valores-pos1
+// 2D = tipo-fila-columna-id-valores-pos1-pos2
+arreglos:   tipos ID CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 ENTERO CORCHETE2 PUNTOCOMA
+                {$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,null,$9);}
+          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 PUNTOCOMA
+                {$$=new declaracionMatriz.default($1,@1.first_line, @1.first_column,$2,null,$11,$14)} 
+          | tipos ID CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido CORCHETE2 PUNTOCOMA 
+                {$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,$7,null);}
+          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido2 CORCHETE2 PUNTOCOMA 
+                {$$=new declaracionMatriz.default($1, @1.first_line, @1.first_column,$2,$9,null);}
 ;
  contenido2: contenido2 COMA CORCHETE1 contenido CORCHETE2   {$1.push($4); $$=$1;}
           | CORCHETE1 contenido CORCHETE2{$$=[$2];}
@@ -224,6 +259,10 @@ contenido:  contenido COMA expresion {$1.push($3); $$=$1;}
 //===================================================================
 //Declaracion General
 declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,null,null,null);}
+            //Con ternario
+            |tipos declaracionesRecursivas IGUAL ternario 
+                {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null,null);console.log($4);console.log($4.tipo);}
+
             |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);}
             //Para los casteos
             |tipos declaracionesRecursivas IGUAL PAR1 DOUBLE PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$7,null,"double");}
@@ -249,8 +288,11 @@ cuerpoDeclaracion:      IGUAL expresion PUNTOCOMA  {$$=$2;}
 
 //Asignacion de variables
 asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
+              //Asignacion a arreglos
+              // 1 Dimension
               | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
-                                                     //{$$ = new AsignacionArreglo.default($1, $6,@1.first_line, @1.first_column);}
+                                                     {$$ = new AsignacionArreglo.default($1,$3, $6,@1.first_line, @1.first_column);}
+              // 2 Dimension
               | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
                                                      {$$ = new AsignacionMatriz.default($1,$3,$6,$9,@1.first_line, @1.first_column);}
               |  ID INCREMENTO PUNTOCOMA             {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
@@ -284,7 +326,15 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           //Para mientras no necesita punto y coma
           | ID INCREMENTO                            {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
           | ID DECREMENTO                            {$$ = new IncrementoDecremento.default($1, "--", @1.first_line, @1.first_column );}
+        // Logicas
+          |NOT expresion {$$ = new ExpLogicas.default(ExpLogicas.Logico.NOT,@1.first_line, @1.first_column,$2,null);}
+          | expresion AND expresion  {$$ = new ExpLogicas.default(ExpLogicas.Logico.AND,@1.first_line, @1.first_column,$1,$3);}
+          | expresion OR expresion   {$$ = new ExpLogicas.default(ExpLogicas.Logico.OR, @1.first_line, @1.first_column,$1,$3);}
+          //| ternario {$$=$1;}
+       
 ;       
+
+
 
 tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
       | DOUBLE                                  {$$ = new Tipo.default(Tipo.tipoDato.DECIMAL);}

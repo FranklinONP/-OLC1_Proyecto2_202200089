@@ -28,7 +28,7 @@ export default class If extends Instruccion {
         if (this.condicion.tipoDato.getTipo() != tipoDato.BOOL) {
             return new Errores("SEMANTICO", "La condicion debe ser bool", this.linea, this.col)
         }
-
+/// tablaGlobal s,push(new Tanbla)
         let newTabla = new tablaSimbolo(tabla)
         newTabla.setNombre("Sentencia IF")
 

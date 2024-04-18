@@ -27,8 +27,11 @@ export default class AsignacionMatriz extends Instruccion {
         if (valor == null) return new Errores("SEMANTICO", "Variable no existente", this.linea, this.col)
 
         if (this.exp.tipoDato.getTipo() != valor.getTipo().getTipo()) return new Errores("SEMANTICO", "Asignacion incorrecta", this.linea, this.col)
-//////////console
+
         this.tipoDato = valor.getTipo()
+        console.log("Desde AsignacionMatriz.ts")
+        console.log("VALOR: ", NewValor)
+        console.log("Posiciones: ", this.pos1, this.pos2)
         valor.setValor(this.pos1,this.pos2,NewValor)
 
 

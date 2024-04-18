@@ -11,14 +11,16 @@ export default class DeclaracionMatriz extends Instruccion {
     //let heroes: string[];
     private identificador: string;
     private valor: Instruccion[][]
-    private tamano: number
+    private pos1: number
+    private pos2: number
 
 
-    constructor(tipo: Tipo, linea: number, col: number, id: string , valor: Instruccion[][],tamano: number) {
+    constructor(tipo: Tipo, linea: number, col: number, id: string , valor: Instruccion[][],pos1:number, pos2:number) {
         super(tipo, linea, col)
         this.identificador = id
         this.valor = valor
-        this.tamano = tamano
+        this.pos1 = pos1
+        this.pos2 = pos2
     }
     
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
@@ -26,11 +28,14 @@ export default class DeclaracionMatriz extends Instruccion {
              switch (this.tipoDato.getTipo()) {
                 case tipoDato.ENTERO:
                     ///pasa algo
-                    let arregloVacio: number[][] = new Array<Array<number>>(this.tamano);
-
-
+                    //let arregloVacio: number[][] = new Array<Array<number>>(this.tamano);
+                    //let arregloVacio: number[][] = Array.from(Array(this.pos1,this.pos2));
+                  //let lista2dvacia: number[][] = Array.from(Array(this.row), () => Array(this.column));
+                    let arregloVacio: number[][] = Array.from(Array(5), () => Array(5));
+                    console.log("Dec de Matriz solo con logitud " + this.pos1 + "," + this.pos2)
+                    console.log(arregloVacio)
                     //Aca debe ir el ciclo para setear a los ids que traiga
-                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador, arregloVacio, this.tamano))){
+                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador, arregloVacio, this.pos1,this.pos2))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     }  
              }
@@ -40,7 +45,7 @@ export default class DeclaracionMatriz extends Instruccion {
 
 
                     //Aca debe ir el ciclo para setear a los ids que traiga
-                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador,this.valor,0))){
+                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador,this.valor,0,0))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     } 
                                         
@@ -51,7 +56,7 @@ export default class DeclaracionMatriz extends Instruccion {
                     });
                 case tipoDato.CADENA:
                     //Aca debe ir el ciclo para setear a los ids que traiga
-                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador,this.valor,0))){
+                    if (!tabla.setMatriz(new Matriz(this.tipoDato,this.identificador,this.valor,0,0))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     } 
                     console.log("=========================================")

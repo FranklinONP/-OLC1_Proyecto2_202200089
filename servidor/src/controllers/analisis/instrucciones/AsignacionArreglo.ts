@@ -8,11 +8,13 @@ import Tipo, { tipoDato } from '../simbolo/Tipo'
 export default class AsignacionArreglo extends Instruccion {
     private id: string
     private exp: Instruccion
+    private pos: number
 
-    constructor(id: string, exp: Instruccion, linea: number, col: number) {
+    constructor(id: string,pos:number, exp: Instruccion, linea: number, col: number) {
         super(new Tipo(tipoDato.VOID), linea, col)
         this.id = id
         this.exp = exp
+        this.pos = pos
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
@@ -26,7 +28,7 @@ export default class AsignacionArreglo extends Instruccion {
 
         this.tipoDato = valor.getTipo()
         console.log("VALOR: ", NewValor)
-        valor.setValor(NewValor)
+        valor.setValor(this.pos,NewValor)
 
 
     }

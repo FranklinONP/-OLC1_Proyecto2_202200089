@@ -12,6 +12,9 @@ class router {
     config(): void {
         this.router.get('/', indexController.prueba);
         this.router.post('/interpretar', indexController.interpretar)
+        this.router.get('/errores', indexController.getErrores)
+        //Probar si manda todos los errroes o solo el ultimo
+        //sino importo la lista de errrores y le hago directamente push
     }
 }
 

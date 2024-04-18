@@ -144,6 +144,7 @@ export default class Declaracion extends Instruccion {
         //Asignacion normal
         else {
             let valorFinal = this.valor.interpretar(arbol, tabla)
+            console.log("Valor final: "+valorFinal)
             if (valorFinal instanceof Errores) return valorFinal
 
             if(this.funcion == "round"){
@@ -185,6 +186,7 @@ export default class Declaracion extends Instruccion {
                 else if(this.funcion == "toString"){
                     valorFinal = valorFinal.toString()
                 }
+
                 if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
                     return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
                 }   

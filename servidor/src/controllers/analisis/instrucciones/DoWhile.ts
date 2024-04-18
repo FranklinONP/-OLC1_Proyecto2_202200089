@@ -16,25 +16,23 @@ export default class DoWhile extends Instruccion{
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        //interpreto 1 vez
+
         let cond = this.condicion.interpretar(arbol, tabla)
-        //valido que no me de error
+
         if (cond instanceof Errores) return cond
 
-        //se valida la condicion
         if (this.condicion.tipoDato.getTipo() != tipoDato.BOOL){
             return new Errores("Semantico", "Condition DoWhile is not BOOL", this.linea, this.col)
         }
 
-        //usaremos un Do while donde la condicion sea nuestro metodo interpretar y dentro del do las instrucciones
         do{
             let newTabla = new tablaSimbolo(tabla)
             newTabla.setNombre("Sentencia Do-While")
             for(let i of this.instrucciones){
-                //Instruccion Break
-                if (i instanceof Break) return;   //si el break viene dentro del ciclo  nada mas
+        
+                if (i instanceof Break) return;
+                
                 let resultado = i.interpretar(arbol, newTabla)
-                //si el break viene dentro de un if en las instrucciones
                 if (resultado instanceof Break) return;
             }
         }while(this.condicion.interpretar(arbol, tabla));

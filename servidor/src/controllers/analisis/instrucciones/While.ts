@@ -5,11 +5,6 @@ import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
 import Break from "./Break";
 
-/*
-while(exp){
-    instrucciones
-}
-*/
 export default class While extends Instruccion {
     private condicion: Instruccion
     private instrucciones: Instruccion[]

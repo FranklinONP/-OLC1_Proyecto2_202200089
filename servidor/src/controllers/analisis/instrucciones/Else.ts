@@ -10,7 +10,27 @@ export default class Else extends Instruccion {
     private condicion: Instruccion
     private instrucciones: Instruccion[]
     private instrucciones2: Instruccion[]
+/*
+if(condicion){
+    instrucciones
+    brak;
+    sdsdsds
+} else if(condicion){
+    instrucciones
+    brak;
+    sdsdsds
+}else if(condicion){
+    instrucciones
+    brak;
+    sdsdsds
+}
+else{
+    instrucciones
+    brak;
+    sdsdsds
+}
 
+*/
 
     constructor(cond: Instruccion, ins: Instruccion[],ins2:Instruccion[], linea: number, col: number) {
         super(new Tipo(tipoDato.VOID), linea, col)
@@ -42,16 +62,11 @@ export default class Else extends Instruccion {
             //Interpretar el else
             if(this.instrucciones2){
                 for (let i of this.instrucciones2) {
-                                if (i instanceof Break) return i;
-                                let resultado = i.interpretar(arbol, newTabla)
-                                if (resultado instanceof Break) return;
-
-                            }
-
-            }
+                        if (i instanceof Break) return i;
+                        let resultado = i.interpretar(arbol, newTabla)
+                        if (resultado instanceof Break) return; }
+            }else{console.log("No hay instrucciones en el else")}
             
         }
-
-
     }
 }

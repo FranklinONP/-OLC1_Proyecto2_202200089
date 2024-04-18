@@ -4,13 +4,15 @@ export default class Matriz {
     private tipo: Tipo
     private id: string
     private valor: any[][]
-    private tamano: number
+    private pos1:number
+    private pos2:number
 
-    constructor(tipo: Tipo, id: string, valor: any[][],tamano: number) {
+    constructor(tipo: Tipo, id: string, valor: any[][],pos1:number,pos2:number) {
         this.tipo = tipo
         this.id = id.toLocaleLowerCase()
         this.valor = valor
-        this.tamano = tamano
+        this.pos1 = pos1
+        this.pos2 = pos2
     }
 
     public getTipo(): Tipo {
@@ -34,7 +36,17 @@ export default class Matriz {
     }
 
     public setValor(pos1:number,pos2:number,valor:any) {
-        this.valor[pos1][pos2].valor = valor
+        console.log("Desde Matriz.ts")
+        console.log(this.id)
+        console.log(this.valor)
+       // try {
+            this.valor[pos1][pos2]=valor
+
+        //} catch (error) {
+        //   this.valor[pos1][pos2]=valor
+        //}
+        console.log(this.valor)
+        console.log("Desde Matriz.ts")
     }
     
     public getTamano() {

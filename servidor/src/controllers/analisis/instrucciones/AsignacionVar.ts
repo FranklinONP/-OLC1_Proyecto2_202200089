@@ -17,6 +17,7 @@ export default class AsignacionVar extends Instruccion {
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
         let NewValor = this.exp.interpretar(arbol, tabla)
+        console.log("Valor interpretado: ", NewValor)
         if (NewValor instanceof Errores) return NewValor
 
         let valor = tabla.getVariable(this.id.toLocaleLowerCase())

@@ -10,4 +10,16 @@ export default class Errores {
         this.fila = fila
         this.col = col
     }
+    public getTipo(): string {
+        return this.tipoError
+    }
+    public getDesc(): string {
+        return this.desc
+    }
+    public getFila(): number {
+        return this.fila
+    }
+    public getCol(): number {
+        return this.col
+    }
 }

@@ -1,6 +1,7 @@
 import tablaSimbolo from "./tablaSimbolos";
 import { Instruccion } from "../abstracto/Instruccion";
 import Errores from "../excepciones/Errores";
+import * as fs from 'fs';
 
 export default class Arbol {
     private instrucciones: Array<Instruccion>
@@ -52,4 +53,6 @@ export default class Arbol {
     public getErrores(): any {
         return this.errores
     }
+
+    
 }

@@ -31,14 +31,22 @@ export default class Arreglo {
 
     public getValor(posicion: number) {
         console.log("======== clase arreglo.ts ===========")
-        console.log(this.valor[posicion].valor)
+        console.log(this.valor[posicion])
         console.log('Valor de la posicion: '+posicion)
         console.log("======== clase arreglo.ts ===========")
-        return this.valor[posicion].valor
+        return this.valor[posicion]
     }
 
-    public setValor(valor: any[]) {
-        this.valor = valor
+    public setValor(pos:number,valor: any) {
+        console.log("<<<<<>>>>>")
+        console.log(this.valor)
+        console.log("Posicion Entrando: "+pos)
+        console.log(this.valor[pos])
+        console.log("<<<<<>>>>>")
+        this.valor[pos] = valor
+        console.log("Posicion Entrando: "+pos)
+        console.log(this.valor[pos])
+        console.log("<<<<<>>>>>")
     }
     
     public getTamano() {

@@ -24,6 +24,6 @@ export default class AccesoMatriz extends Instruccion {
         console.log("<=============>")
         console.log(valorVariable.getValor(this.pos1,this.pos2))
         console.log("<=============>")
-        return valorVariable.getValor(this.pos1,this.pos2).valor
+        return valorVariable.getValor(this.pos1,this.pos2)//.valor
     }
 }
