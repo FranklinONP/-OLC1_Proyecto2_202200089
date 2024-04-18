@@ -54,7 +54,6 @@ function App() {
        console.log(data.listaErrores)
        console.log("Arreglo de errores")
        console.log(arreglo);
-       
       })
       .catch((error) => {
         alert("Error al generar el reporte de errores.");

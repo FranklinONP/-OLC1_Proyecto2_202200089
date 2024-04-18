@@ -8,10 +8,10 @@ import Tipo, { tipoDato } from '../simbolo/Tipo'
 export default class AsignacionMatriz extends Instruccion {
     private id: string
     private exp: Instruccion
-    private pos1: number
-    private pos2: number
+    private pos1: Instruccion
+    private pos2: Instruccion
 
-    constructor(id: string,pos1:number,pos2:number, exp: Instruccion, linea: number, col: number) {
+    constructor(id: string,pos1:Instruccion,pos2:Instruccion, exp: Instruccion, linea: number, col: number) {
         super(new Tipo(tipoDato.VOID), linea, col)
         this.id = id
         this.exp = exp
@@ -29,10 +29,18 @@ export default class AsignacionMatriz extends Instruccion {
         if (this.exp.tipoDato.getTipo() != valor.getTipo().getTipo()) return new Errores("SEMANTICO", "Asignacion incorrecta", this.linea, this.col)
 
         this.tipoDato = valor.getTipo()
+
+        //interpreto la posicion
+        let pos1 = this.pos1.interpretar(arbol,tabla)
+        //Agregar Manejo de Errores
+        let pos2 = this.pos2.interpretar(arbol,tabla)
+        //Agregar Manejo de Errores
+
+
         console.log("Desde AsignacionMatriz.ts")
         console.log("VALOR: ", NewValor)
-        console.log("Posiciones: ", this.pos1, this.pos2)
-        valor.setValor(this.pos1,this.pos2,NewValor)
+        console.log("Posiciones Interpretadas: ", this.pos1, this.pos2)
+        valor.setValor(pos1,pos2,NewValor)
 
 
     }

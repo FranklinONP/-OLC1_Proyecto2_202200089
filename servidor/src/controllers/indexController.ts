@@ -39,7 +39,7 @@ class controller {
 
     public getErrores(req: Request, res: Response) {
         try {
-        
+            console.log(listaErrores)
             res.json({ "listaErrores": listaErrores })
         } catch (err: any) {    
             res.send({ "Error": "Ya no sale compi2" })

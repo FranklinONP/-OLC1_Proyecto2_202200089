@@ -7,10 +7,10 @@ import Tipo, { tipoDato } from "../simbolo/Tipo";
 
 export default class AccesoMatriz extends Instruccion {
     private id: string
-    private pos1: number
-    private pos2: number
+    private pos1: Instruccion
+    private pos2: Instruccion
 
-    constructor(id: string, linea: number, col: number,posicion1:number,posicion2:number) {
+    constructor(id: string, linea: number, col: number,posicion1:Instruccion,posicion2:Instruccion) {
         super(new Tipo(tipoDato.VOID), linea, col)
         this.id = id
         this.pos1 = posicion1
@@ -18,12 +18,21 @@ export default class AccesoMatriz extends Instruccion {
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        let valorVariable: Matriz = tabla.getMatriz(this.id)
+        let valorVariable: Matriz =<Matriz>tabla.getMatriz(this.id)
         if (valorVariable == null) return new Errores("SEMANTICO", "Acceso invalido", this.linea, this.col)
         this.tipoDato = valorVariable.getTipo()
+
+        //Interpretar las posiciones
+        let pos1= this.pos1.interpretar(arbol,tabla)
+        //Agregar Manejo de Errores
+        let pos2=this.pos2.interpretar(arbol,tabla)
+        //Agregar Manejo de Errores
+/*
         console.log("<=============>")
-        console.log(valorVariable.getValor(this.pos1,this.pos2))
+        console.log(valorVariable.getValor(pos1,this.pos2))
         console.log("<=============>")
-        return valorVariable.getValor(this.pos1,this.pos2)//.valor
+*/
+        
+        return valorVariable.getValor(pos1,pos2)//.valor
     }
 }

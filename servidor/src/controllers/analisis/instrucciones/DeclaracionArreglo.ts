@@ -28,10 +28,11 @@ export default class DeclaracionArreglo extends Instruccion {
                     ///pasa algo
                     let arregloVacio: number[] = Array.from(Array(this.tamano));
                     console.log("=============Tamano de Arreglo================")
-                    console.log("Tamano Entrando: "+this.tamano)
-                    console.log(arregloVacio.length)
-                    console.log(arregloVacio)
+                    for (let i = 0; i < this.tamano; i++) {
+                        arregloVacio[i] = 0;
+                    }
                     console.log("==============================================")
+                    console.log(arregloVacio)
 
                     //Aca debe ir el ciclo para setear a los ids que traiga
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio, this.tamano))){
@@ -55,6 +56,8 @@ export default class DeclaracionArreglo extends Instruccion {
                     }
              }
         } else {
+            console.log("Tamano del arreglo que estoy mandando===================================>")
+            console.log(this.valor.length)
             switch (this.tipoDato.getTipo()) {
                 case tipoDato.ENTERO:
 

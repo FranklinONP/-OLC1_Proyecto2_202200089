@@ -32,21 +32,20 @@ export default class Matriz {
     }
 
     public getValor(pos1: number,pos2:number) {
-        return this.valor[pos1][pos2]
+        //Creado vacio
+        if(this.pos1!=0 && this.pos2!=0){
+            return this.valor[pos1][pos2]
+        }
+        //Llenado al ser creado
+        else if(this.pos1==0 && this.pos2==0){
+            return this.valor[pos1][pos2].valor
+        }
+
     }
 
     public setValor(pos1:number,pos2:number,valor:any) {
         console.log("Desde Matriz.ts")
-        console.log(this.id)
-        console.log(this.valor)
-       // try {
-            this.valor[pos1][pos2]=valor
-
-        //} catch (error) {
-        //   this.valor[pos1][pos2]=valor
-        //}
-        console.log(this.valor)
-        console.log("Desde Matriz.ts")
+        this.valor[pos1][pos2]=valor
     }
     
     public getTamano() {

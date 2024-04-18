@@ -38,7 +38,10 @@ const IncrementoDecremento=require('./expresiones/IncrementoDecremento')
 const Ternario=require('./instrucciones/Ternario')
 //Logicos
 const ExpLogicas=require('./expresiones/ExpLogicas')
-
+//Tipos para casteos
+const TiposCasteos=require('./simbolo/TiposCasteos')
+//Clase Casteo
+const Casteo=require('./expresiones/Casteos')
 %}
 
 // analizador lexico
@@ -64,12 +67,14 @@ const ExpLogicas=require('./expresiones/ExpLogicas')
 "char"                  return 'CHAR'
 "new"                   return 'NEW'
 //Funciones
+
 "tolower"               return 'TOLOWER'
 "toupper"               return 'TOUPPER'
 "round"                 return 'ROUND'
 "length"                return 'LENGTH'
 "typeof"                return 'TYPEOF'
 "tostring"              return 'TOSTRING'
+"c_str"                 return 'CSTR'
 //Ciclicas
 "true"                  return 'TRUE'
 "false"                 return 'FALSE'  
@@ -103,6 +108,7 @@ const ExpLogicas=require('./expresiones/ExpLogicas')
 "]"                     return "CORCHETE2"
 "endl"                  return "ENDL"
 ":"                     return "DOSPUNTOS"
+"."                     return "PUNTO"
 ";"                     return "PUNTOCOMA"
 ","                     return "COMA"
 "+"                     return "MAS"
@@ -157,6 +163,8 @@ const ExpLogicas=require('./expresiones/ExpLogicas')
 %left 'POR' 'DIV'
 %left 'MOD'
 %right 'UMENOS'
+%right 'PUNTO'
+%right 'CSTR'
 
 
 // simbolo inicial
@@ -235,7 +243,7 @@ break : BREAK PUNTOCOMA    {$$ = new Break.default(@1.first_line, @1.first_colum
 
 //Impresion
 impresion :   COUT APERTURA_COUT expresion PUNTOCOMA         {$$= new Print.default($3, @1.first_line, @1.first_column);}
-            | COUT APERTURA_COUT expresion ENDL PUNTOCOMA    {$$= new Println.default($3, @1.first_line, @1.first_column);}
+            | COUT APERTURA_COUT expresion APERTURA_COUT ENDL PUNTOCOMA    {$$= new Println.default($3, @1.first_line, @1.first_column);}
 ;
 //Declaracion de arreglos
 // 1D = tipo-fila-columna-id-valores-pos1
@@ -263,19 +271,21 @@ declaracion : tipos declaracionesRecursivas PUNTOCOMA {$$= new Declaracion.defau
             |tipos declaracionesRecursivas IGUAL ternario 
                 {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null,null);console.log($4);console.log($4.tipo);}
 
-            |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);}
+            |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4,null);console.log("<<>>>")}
             //Para los casteos
             |tipos declaracionesRecursivas IGUAL PAR1 DOUBLE PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$7,null,"double");}
             |tipos declaracionesRecursivas IGUAL PAR1 INT PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$7,null,"int");}
             |tipos declaracionesRecursivas IGUAL PAR1 STD DOSPUNTOS DOSPUNTOS STRING PAR2 expresion PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$10,null,"string");}
             //Para las funciones
+            /*
             |tipos declaracionesRecursivas IGUAL TOLOWER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toLower",null);}   
             |tipos declaracionesRecursivas IGUAL TOUPPER PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toUpper",null);}
             |tipos declaracionesRecursivas IGUAL ROUND PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"round",null);}
             |tipos declaracionesRecursivas IGUAL LENGTH PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"length",null);}
             |tipos declaracionesRecursivas IGUAL TYPEOF PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"typeof",null);}
             |tipos declaracionesRecursivas IGUAL TOSTRING PAR1 expresion PAR2 PUNTOCOMA {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$6,"toString",null);}
-            //falta es ctr
+            */
+             //falta es ctr
 ;
 
 // Recursividad para declarar
@@ -290,10 +300,10 @@ cuerpoDeclaracion:      IGUAL expresion PUNTOCOMA  {$$=$2;}
 asignacion : ID IGUAL expresion PUNTOCOMA            {$$ = new AsignacionVar.default($1, $3, @1.first_line, @1.first_column);}
               //Asignacion a arreglos
               // 1 Dimension
-              | ID CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
+              | ID CORCHETE1 expresion CORCHETE2 IGUAL expresion PUNTOCOMA
                                                      {$$ = new AsignacionArreglo.default($1,$3, $6,@1.first_line, @1.first_column);}
               // 2 Dimension
-              | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 IGUAL expresion PUNTOCOMA
+              | ID CORCHETE1 expresion CORCHETE2 CORCHETE1 expresion CORCHETE2 IGUAL expresion PUNTOCOMA
                                                      {$$ = new AsignacionMatriz.default($1,$3,$6,$9,@1.first_line, @1.first_column);}
               |  ID INCREMENTO PUNTOCOMA             {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
               | ID DECREMENTO PUNTOCOMA              {$$ = new IncrementoDecremento.default($1, "--", @1.first_line, @1.first_column );}
@@ -311,8 +321,8 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | CADENA                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CADENA), $1, @1.first_line, @1.first_column );}
           | BOOL                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL),$1, @1.first_line, @1.first_column );}   
           | ID                               {$$ = new AccesoVar.default($1, @1.first_line, @1.first_column);}  
-          | ID CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoArreglo.default($1, @1.first_line, @1.first_column,$3);}
-          | ID CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 {$$ = new AccesoMatriz.default($1, @1.first_line, @1.first_column,$3,$6);}
+          | ID CORCHETE1 expresion CORCHETE2 {$$ = new AccesoArreglo.default($1, @1.first_line, @1.first_column,$3);}
+          | ID CORCHETE1 expresion CORCHETE2 CORCHETE1 expresion CORCHETE2 {$$ = new AccesoMatriz.default($1, @1.first_line, @1.first_column,$3,$6);}
           //Comparadores
           | TRUE                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL), true, @1.first_line, @1.first_column ); }
           | FALSE                            {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL), false, @1.first_line, @1.first_column ); }
@@ -331,10 +341,25 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | expresion AND expresion  {$$ = new ExpLogicas.default(ExpLogicas.Logico.AND,@1.first_line, @1.first_column,$1,$3);}
           | expresion OR expresion   {$$ = new ExpLogicas.default(ExpLogicas.Logico.OR, @1.first_line, @1.first_column,$1,$3);}
           //| ternario {$$=$1;}
-       
+          //Las Funciones
+          | TOLOWER PAR1 expresion PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.TOLOWER),$3,@1.first_line, @1.first_column);}     
+          | TOUPPER PAR1 expresion PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.TOUPPER),$3,@1.first_line, @1.first_column);}
+          | ROUND PAR1 expresion PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.ROUND),$3,@1.first_line, @1.first_column);}
+          | expresion PUNTO LENGTH PAR1 PAR2{$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.LENGTH),$1,@1.first_line, @1.first_column);}
+          | TYPEOF PAR1 expresion PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.TYPEOF),$3,@1.first_line, @1.first_column);}
+          | STD DOSPUNTOS DOSPUNTOS TOSTRING PAR1 expresion PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.TOSTRING),$6,@1.first_line, @1.first_column);console.log("<===>");}
+          | expresion PUNTO CSTR PAR1 PAR2 {$$=new Casteo.default(new TiposCasteos.default(TiposCasteos.tipoDatoCasteo.CSTR),$1,@1.first_line, @1.first_column);}
 ;       
 
 
+tiposCasteos: TOLOWER                           {$$=new TiposCasteos.default(TiposCasteos.Casteos.TOLOWER);}
+            | TOUPPER                           {$$=new TiposCasteos.default(TiposCasteos.Casteos.TOUPPER);}
+            | ROUND                             {$$=new TiposCasteos.default(TiposCasteos.Casteos.ROUND);}
+            | LENGTH                            {$$=new TiposCasteos.default(TiposCasteos.Casteos.LENGTH);}
+            | TYPEOF                            {$$=new TiposCasteos.default(TiposCasteos.Casteos.TYPEOF);}
+            | STD DOSPUNTOS DOSPUNTOS STRING    {$$=new TiposCasteos.default(TiposCasteos.Casteos.STRING);}
+            | PUNTO CSTR                        {$$=new TiposCasteos.default(TiposCasteos.Casteos.CSTR);}
+;
 
 tipos : INT                                     {$$ = new Tipo.default(Tipo.tipoDato.ENTERO);}
       | DOUBLE                                  {$$ = new Tipo.default(Tipo.tipoDato.DECIMAL);}

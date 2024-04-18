@@ -147,26 +147,6 @@ export default class Declaracion extends Instruccion {
             console.log("Valor final: "+valorFinal)
             if (valorFinal instanceof Errores) return valorFinal
 
-            if(this.funcion == "round"){
-                //valorFinal = Math.round(valorFinal)
-                console.log("Round")
-            }
-            else if(this.funcion =="length"){
-                //valorFinal = valorFinal.length()
-                // Manejo de errores semanticos aun no los manejo para el caso de los parseos
-                console.log("Length")
-            }
-            else if(this.funcion == "typeOf"){
-                //pendiente
-            }
-            else if(this.funcion == "toString"){
-                valorFinal = valorFinal.toString()
-            }
-            //Cuando no viene con funcion de parseo o conversion
-            else if (this.valor.tipoDato.getTipo() != this.tipoDato.getTipo()) {
-                return new Errores("SEMANTICO", "No se puede declarar variable", this.linea, this.col)
-            }
-
             this.identificador.forEach(elemento => {
                 //Aca debe ir el ciclo para setear a los ids que traiga
                 if(this.funcion == "toLower"){
@@ -180,13 +160,18 @@ export default class Declaracion extends Instruccion {
                 else if(this.funcion == "round"){
                     valorFinal = Math.round(valorFinal)
                 }
-                else if(this.funcion == "typeOf"){
+                else if(this.funcion == "typeof"){
+                    console.log("Tipo de dato: "+valorFinal)
                     valorFinal = typeof valorFinal
+                    console.log("Tipo de dato: "+valorFinal)
+                    valorFinal = valorFinal.toString()
+                    console.log("Tipo de dato: "+valorFinal)
                 }
                 else if(this.funcion == "toString"){
                     valorFinal = valorFinal.toString()
                 }
-
+                
+                console.log("=============================: "+valorFinal)
                 if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
                     return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
                 }   

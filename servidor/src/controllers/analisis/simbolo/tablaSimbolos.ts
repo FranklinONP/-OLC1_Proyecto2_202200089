@@ -59,9 +59,17 @@ export default class tablaSimbolo {
     }
 
     //Arreglos
-
+    /*
     public getArreglo(id: string) {
         return <Arreglo> this.getTabla().get(id.toLocaleLowerCase())
+    }
+    */
+    public getArreglo(id: string) {
+        for (let i: tablaSimbolo = this; i != null; i = i.getAnterior()) {
+            let busqueda: Arreglo = <Arreglo>i.getTabla().get(id.toLocaleLowerCase())
+            if (busqueda != null) return busqueda
+        }
+        return null
     }
 
     public setArreglo(simbolo: Arreglo) {
@@ -72,10 +80,18 @@ export default class tablaSimbolo {
         }
         return false
     }    
-    //Arreglos [][]
-
+    //Vectores [][]
+    /*
     public getMatriz(id: string) {
         return <Matriz> this.getTabla().get(id.toLocaleLowerCase())
+    }
+    */
+    public getMatriz(id: string) {
+        for (let i: tablaSimbolo = this; i != null; i = i.getAnterior()) {
+            let busqueda: Matriz = <Matriz>i.getTabla().get(id.toLocaleLowerCase())
+            if (busqueda != null) return busqueda
+        }
+        return null
     }
 
     public setMatriz(simbolo: Matriz) {
