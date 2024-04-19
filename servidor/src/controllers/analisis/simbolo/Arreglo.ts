@@ -5,12 +5,14 @@ export default class Arreglo {
     private id: string
     private valor: any[]
     private tamano: number
+    private bandera: boolean
 
-    constructor(tipo: Tipo, id: string, valor: any[],tamano: number) {
+    constructor(tipo: Tipo, id: string, valor: any[],tamano: number,bandera: boolean) {
         this.tipo = tipo
         this.id = id.toLocaleLowerCase()
         this.valor = valor
         this.tamano = tamano
+        this.bandera = bandera
     }
 
     public getTipo(): Tipo {
@@ -28,25 +30,24 @@ export default class Arreglo {
     public setId(id: string) {
         this.id = id
     }
+    public getValor() {
+        return this.valor.map(nativo => nativo.valor)
+    }
 
-    public getValor(posicion: number) {
+    public getValor1(posicion: number) {
         //Capturo el error si esta fuera del rango
         let longitud = this.valor.length
-        //Creado Vacio
+        if(this.bandera){
+            return this.valor[posicion]
+        }
         if(posicion>=0 && posicion<=longitud){
              if(this.tamano!=0){
             return this.valor[posicion]
         }
-        //Llenado al ser creado
         else if(this.tamano==0){
             return this.valor[posicion].valor
         }
         }else{
-            console.log("Indice fuera de rango")
-            console.log("ID: "+this.id)
-            console.log("Posicion: "+posicion)
-            console.log("Tamano: "+this.valor.length)
-            console.log("==========================================================================================")
             return new Errores("SEMANTICO","Indice fuera de rango",0,0)
 
         }
@@ -54,21 +55,23 @@ export default class Arreglo {
     }
 
     public setValor(pos:number,valor: any) {
-        //this.valor[pos].valor = valor
         let longitud = this.valor.length
+        if(this.bandera){
+            console.log("Set con Bandera==============================================================================================")
+            console.log("Posicion: "+pos)
+            this.valor[pos] = valor
+            console.log(this.valor[pos])
+            return
+        }
         if(this.tamano!=0 && pos>=0 && pos<=longitud){
             this.valor[pos] = valor
-            console.log("Entro al sin .valor")
         }
         else if(this.tamano==0){
-             this.valor[pos].valor=valor
-            console.log("Entro al .valor")
+            console.log("====")
+             this.valor[pos]=valor
+             console.log(this.valor)
+             console.log("====")
         }else{
-            console.log("Indice fuera de rango")
-            console.log("ID: "+this.id)
-            console.log("Posicion: "+pos)
-            console.log("Tamano: "+this.valor.length)
-            console.log("==========================================================================================")
             return new Errores("SEMANTICO","Indice fuera de rango",0,0)
         }
     }

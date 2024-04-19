@@ -19,6 +19,7 @@ export default class Casteos extends Instruccion{
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
         let valor = this.valor.interpretar(arbol,tabla)
+        console.log("Casteos====================>")
         switch (this.tipoCasteo.getTipo()) {
             case tipoDatoCasteo.TOLOWER:
                 return this.valor.interpretar(arbol,tabla).toString().toLowerCase()
@@ -27,7 +28,17 @@ export default class Casteos extends Instruccion{
             case tipoDatoCasteo.ROUND:
                 return this.valor.interpretar(arbol,tabla).mathround()
             case tipoDatoCasteo.LENGTH:
-                return this.valor.interpretar(arbol,tabla).length
+                console.log("Entro al .length")
+                try {
+                    return this.valor.interpretar(arbol,tabla).length
+                } catch (error) {
+                    //Errores.getInstance().push(new Errores("Semantico", error, this.fila, this.columna))
+                    console.log("--------------------->")
+                    console.log(this.valor)
+                    console.log("--------------------->")
+                    console.log("--------------------->")
+                }
+                
             case tipoDatoCasteo.TYPEOF:
                 switch(this.valor.tipoDato.getTipo()){
                     case 0:
@@ -49,7 +60,6 @@ export default class Casteos extends Instruccion{
             case tipoDatoCasteo.CSTR:
                 if(this.valor.tipoDato.getTipo() == 4){
                     console.log("Funcion CSTR()")
-                    console.log(this.valor.interpretar(arbol,tabla).split(''))
                     return this.valor.interpretar(arbol,tabla).split('')
                 }
             

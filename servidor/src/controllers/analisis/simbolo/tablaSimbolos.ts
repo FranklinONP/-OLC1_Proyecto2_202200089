@@ -5,12 +5,12 @@ import Tipo, { tipoDato } from './Tipo'
 
 export default class tablaSimbolo {
     private tablaAnterior: tablaSimbolo | any
-    private tablaActual: Map<string, Simbolo|Arreglo|Matriz>
+    private tablaActual: Map<string, Matriz|Simbolo|Arreglo>
     private nombre: string
 
     constructor(anterior?: tablaSimbolo) {
         this.tablaAnterior = anterior
-        this.tablaActual = new Map<string, Simbolo|Arreglo|Matriz>()
+        this.tablaActual = new Map<string, Matriz|Simbolo|Arreglo>()
         this.nombre = ""
     }
 

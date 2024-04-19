@@ -33,6 +33,6 @@ export default class AccesoMatriz extends Instruccion {
         console.log("<=============>")
 */
         
-        return valorVariable.getValor(pos1,pos2)//.valor
+        return valorVariable.getValor1(pos1,pos2)//.valor
     }
 }

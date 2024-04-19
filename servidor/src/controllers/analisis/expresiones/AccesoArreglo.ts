@@ -24,7 +24,7 @@ export default class AccesoArreglo extends Instruccion {
         //Agregar Manejo de Errores
         console.log("AccesoArreglo.ts")
         console.log("Posicion: "+pos)
-        console.log("Valor: "+valorVariable.getValor(pos))
-        return valorVariable.getValor(pos)
+        console.log("Valor: "+valorVariable.getValor1(pos))
+        return valorVariable.getValor1(pos)
     }
 }

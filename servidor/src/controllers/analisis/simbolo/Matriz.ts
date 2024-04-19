@@ -30,8 +30,10 @@ export default class Matriz {
     public setId(id: string) {
         this.id = id
     }
-
-    public getValor(pos1: number,pos2:number) {
+    public getValor() {
+        return this.valor.map(fila => fila.map(nativo => nativo.valor));
+    }
+    public getValor1(pos1: number,pos2:number) {
         //Creado vacio
         if(this.pos1!=0 && this.pos2!=0){
             return this.valor[pos1][pos2]
