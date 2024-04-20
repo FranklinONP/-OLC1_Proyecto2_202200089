@@ -110,6 +110,7 @@ export default class Relacionales extends Instruccion {
             case tipoDato.ENTERO:
                 switch (comparando2) {
                     case tipoDato.ENTERO:
+                        console.log("-----------------------------------------------")
                         return parseInt(comp1) < parseInt(comp2)
                     case tipoDato.DECIMAL:
                         return parseInt(comp1) < parseFloat(comp2)

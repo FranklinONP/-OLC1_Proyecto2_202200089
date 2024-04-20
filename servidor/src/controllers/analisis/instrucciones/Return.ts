@@ -14,8 +14,13 @@ export default class Return extends Instruccion{
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
+        console.log('RETURN---------------');
+        console.log(this.expresion);
         if(this.expresion != undefined){
             let result = this.expresion.interpretar(arbol, tabla);
+            console.log('RETURN---------------');
+            console.log(result);
+            this.tipoDato= this.expresion.tipoDato;
             if(result instanceof Errores) return result;
         }
         return this;

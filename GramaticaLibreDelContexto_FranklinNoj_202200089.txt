@@ -1,0 +1,186 @@
+
+=========================================================================================================================================
+GRAMATICA LIBRE DEL CONTEXTO EN NOTACION BNF
+FRANKLIN ORLANDO NOJ PEREZ     202200089
+LABORATORIO DE ORGANIZACION DE LENGUAJES Y COMPILADORES 1
+
+Terminales={ 
+	EXECUTE, VOID, RETURN, TOLOWER, TOUPPER, ROUND, LENGTH, TYPEOF, TOSTRING, CSTR, TRUE, FALSE, IF, ELSE, SWITCH,
+	CASE, DEFAULT, WHILE, BREAK, DO, FOR, INCREMENTO, DECREMENTO, LLAVE1, LLAVE2, DIFERENTE, NOT, AND, OR, INTERROGACION,
+	APERTURA_COUT, MENORIGUAL, MENOR, MAYORIGUAL, MAYOR, IGUALIGUAL, IGUAL, CORCHETE1, CORCHETE2, ENDL, DOSPUNTOS,
+	PUNTO, PUNTOCOMA, COMA, MAS, MENOS, POR, DIV, MOD, PAR1, PAR2, DECIMAL, ENTERO, ID,CARACTER, CADENA,STD,BOOL,CHAR,NEW,
+	COUT,INT,DOUBLE,STRING
+	}
+
+No terminales={	arreglos, impresion, declaracion, asignacion, if, while, break, switch, dowhile, for, execute, metodo, 
+		llamada, return,impresion, declaracion, asignacion, if, while, break, switch, doWhile, for, Execute,
+		Metodo, Llamada, pllamada, ternario, cases, case, defaultCase,instruccion, instruccioes, inicio}
+
+
+Inicio= <INICIO>
+
+==================================================================Producciones=============================================================
+===========================================================================================================================================
+
+INICIO ::= <instrucciones> 
+
+instrucciones::= <instrucciones> <instruccion>   
+              | <instruccion>
+
+<instruccion>::=<arreglos>|<impresion>|<declaracion>|<asignacion>|<if>|<while>|<break>|<switch>|<dowhile>|<for>|<execute>|<metodo>|<llamada>|<return>
+
+<return>::= RETURN <expresion> PUNTOCOMA
+
+<Metodo>: <tipos> ID PAR1 <pmetodo> PAR2 LLAVE1 <instrucciones> LLAVE2 
+      | <tipos> ID PAR1 PAR2 LLAVE1 <instrucciones> LLAVE2 
+ 
+<pmetodo>::=<pmetodo> COMA <tipos> ID
+       | <tipos> ID 
+
+<Execute> ::= EXECUTE ID PAR1 <pllamada> PAR2 PUNTOCOMA 
+            | EXECUTE ID PAR1 PAR2 PUNTOCOMA  
+
+<Llamada> ::= ID PAR1 <pllamada> PAR2 PUNTOCOMA 
+            | ID PAR1 PAR2 PUNTOCOMA      
+
+
+<pllamada> ::= <pllamada> COMA <expresion>   
+             | <expresion>        
+
+<ternario> ::= <expresion> INTERROGACION <expresion> DOSPUNTOS <expresion> PUNTOCOMA 
+
+<for> ::= FOR PAR1 <declaracion> <expresion> PUNTOCOMA <expresion> PAR2 LLAVE1 <instrucciones> LLAVE2 
+        | FOR PAR1 <asignacion>  <expresion> PUNTOCOMA <expresion> PAR2 LLAVE1 <instrucciones> LLAVE2 
+
+<doWhile> ::= DO LLAVE1 <instrucciones> LLAVE2 WHILE PAR1 <expresion> PAR2 
+
+<if> ::=   IF PAR1 <expresion> PAR2 LLAVE1 <instrucciones> LLAVE2
+        |   IF PAR1 <expresion> PAR2 LLAVE1 <instrucciones> LLAVE2 ELSE
+
+<else> ::=   ELSE <if>
+        | ELSE LLAVE1 <instrucciones> LLAVE2
+
+
+
+<switch> ::= SWITCH PAR1 <expresion> PAR2 LLAVE1 <cases> LLAVE2 
+
+<cases> ::= <cases> <case>  
+          | <case>        
+          | <defaultCase> 
+
+<case> ::= CASE <expresion> DOSPUNTOS <instrucciones> 
+         | CASE <expresion> DOSPUNTOS <instrucciones> <defaultCase>
+
+<defaultCase> ::= DEFAULT DOSPUNTOS <instrucciones>
+
+
+<while> ::= WHILE PAR1 <expresion> PAR2 LLAVE1 <instrucciones> LLAVE2  
+
+
+<break> ::= BREAK PUNTOCOMA    
+
+
+<impresion> ::=   COUT APERTURA_COUT <expresion> PUNTOCOMA   
+            | COUT APERTURA_COUT <expresion> APERTURA_COUT ENDL PUNTOCOMA  
+
+
+<arreglos> ::=   <tipos> ID CORCHETE1 CORCHETE2 IGUAL NEW <tipos> CORCHETE1 <expresion> CORCHETE2 PUNTOCOMA
+           
+          | <tipos> ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW <tipos> CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 PUNTOCOMA
+          
+          | <tipos> ID CORCHETE1 CORCHETE2 IGUAL CORCHETE1 <contenido> CORCHETE2 PUNTOCOMA 
+          
+          | <tipos> CORCHETE1 CORCHETE2 ID  IGUAL <expresion> PUNTOCOMA
+      
+          | <tipos> ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL CORCHETE1 <contenido2> CORCHETE2 PUNTOCOMA 
+
+         
+
+<contenido2> ::=<contenido2> COMA CORCHETE1 <contenido> CORCHETE2   
+          | CORCHETE1 <contenido> CORCHETE2
+          | <expresion>
+
+<contenido> ::= | <contenido> COMA <expresion> 
+          | <expresion>
+	
+
+
+<declaracion> ::= | tipos declaracionesRecursivas PUNTOCOMA 
+          | tipos declaracionesRecursivas IGUAL ternario 
+          | tipos declaracionesRecursivas IGUAL <expresion> PUNTOCOMA 
+
+  
+<declaracionesRecursivas> ::= <declaracionesRecursivas> COMA ID   
+                        | ID 
+
+<cuerpoDeclaracion> ::=      IGUAL <expresion> PUNTOCOMA 
+                        | PUNTOCOMA        
+
+<asignacion> ::= | ID IGUAL <expresion> PUNTOCOMA         
+          | ID CORCHETE1 <expresion> CORCHETE2 IGUAL <expresion> PUNTOCOMA
+          | ID CORCHETE1 <expresion> CORCHETE2 CORCHETE1 <expresion> CORCHETE2 IGUAL <expresion> PUNTOCOMA 
+          | ID INCREMENTO PUNTOCOMA           
+          | ID DECREMENTO PUNTOCOMA      
+        
+
+<expresion> ::=          | <expresion> MAS <expresion>          
+          | <expresion> MENOS <expresion>        
+          | MENOS <expresion> %prec UMENOS   
+          | <expresion> POR <expresion>          
+          | <expresion> DIV <expresion>         
+          | <expresion> MOD <expresion>          
+          | ENTERO                          
+          | DECIMAL                          
+          | CARACTER
+          | CADENA                           
+          | BOOL                              
+          | TRUE                           
+          | FALSE                            
+          | PAR1 <expresion> PAR2             
+          | <expresion> MENOR <expresion>       
+          | <expresion> MENORIGUAL <expresion> 
+          | <expresion> MAYOR <expresion>       
+          | <expresion> MAYORIGUAL <expresion>  
+          | <expresion> IGUALIGUAL <expresion>   
+          | <expresion> DIFERENTE <expresion>    
+          | Llamada
+          | ID INCREMENTO                      
+          | ID DECREMENTO                            
+          |NOT <expresion>
+          | <expresion> AND <expresion>
+          | <expresion> OR <expresion>   
+          | TOLOWER PAR1 <expresion> PAR2  
+          | TOUPPER PAR1 <expresion> PAR2 
+          | ROUND PAR1 <expresion> PAR2 
+          | <expresion> PUNTO LENGTH PAR1 PAR2
+          | TYPEOF PAR1 <expresion> PAR2 
+          | STD DOSPUNTOS DOSPUNTOS TOSTRING PAR1 <expresion> PAR2
+          | <expresion> PUNTO CSTR PAR1 PAR2 
+          | ID                              
+          | ID CORCHETE1 <expresion> CORCHETE2 
+          | ID CORCHETE1 <expresion> CORCHETE2 CORCHETE1 <expresion> CORCHETE2 
+          | PAR1 INT PAR2 <expresion> 
+          | PAR1 DOUBLE PAR2 <expresion>
+          | PAR1 STRING PAR2 <expresion>  
+          | PAR1 CHAR PAR2 <expresion>
+ 
+
+<tiposCasteos> ::= TOLOWER                          
+            | TOUPPER                          
+            | ROUND                           
+            | LENGTH                            
+            | TYPEOF                          
+            | STD DOSPUNTOS DOSPUNTOS STRING    
+            | PUNTO CSTR                      
+
+
+<tipos> ::= INT                                     
+      | DOUBLE                                  
+      | STD DOSPUNTOS DOSPUNTOS STRING         
+      | BOOL                                    
+      | CHAR                                    
+      | VOID 
+
+
+
+

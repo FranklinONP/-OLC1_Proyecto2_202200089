@@ -22,7 +22,7 @@ export default class Metodo extends Instruccion {
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-
+        console.log('METODO')
         if(this.tipoDato.getTipo() == tipoDato.VOID){
             for(let i of this.instrucciones){
                 let resultado = i.interpretar(arbol,tabla)
@@ -39,20 +39,39 @@ export default class Metodo extends Instruccion {
         } else{
 
             let banderaReturn = false
-            for(let i of this.instrucciones){
+            for(let x of this.instrucciones){
+                let i=x.interpretar(arbol,tabla)
+                console.log("<1>")
+                console.log(x)
+                console.log("<1>")
+                console.log(i)
+                if(i instanceof Errores){
+                    console.log("Si es error")
+                    return  i
+                }
                 if(i instanceof Return){
                     banderaReturn = true
+                    console.log("444")
                     if(i.expresion != undefined){
                         this.valorBreak = i.expresion
-                            if(this.tipoDato.getTipo() == i.expresion.tipoDato.getTipo()){
+                        console.log("<2>")
+                        console.log(this.tipoDato.getTipo())    
+                        console.log(this.tipoDato.getTipo())
+                        console.log(i.tipoDato.getTipo())
+                        console.log("<2>")
+
+                            if(this.tipoDato.getTipo() != i.tipoDato.getTipo()){
                                 return new Errores('Semantico', `El tipo de dato de la funcion ${this.id} no coincide con el tipo de dato de la expresion`, this.linea, this.col)
                             }
-                        return i.expresion
+                        console.log("<3>")
+                        console.log(i.expresion.interpretar(arbol,tabla))
+                        return i.expresion.interpretar(arbol,tabla)
                     }else{
                         return new Errores('Semantico', `El tipo de dato de la funcion ${this.id} no coincide con el tipo de dato de la expresion`, this.linea, this.col)
                     }
                 }
-                let resultado = i.interpretar(arbol,tabla)
+                //let resultado = x.interpretar(arbol,tabla)
+                let resultado = i   
                 if(resultado instanceof Errores){
                     return resultado;
                 }

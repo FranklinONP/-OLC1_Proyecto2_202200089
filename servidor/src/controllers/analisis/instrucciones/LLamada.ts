@@ -18,7 +18,10 @@ export default class Llamada extends Instruccion {
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        let busqueda = arbol.getFuncion(this.id.toLowerCase())
+        console.log("---")
+        let busqueda = arbol.getFuncion(this.id)
+        //console.log(busqueda)
+        console.log("-----")
         if (busqueda == null) {
             return new Errores("SEMANTICO", "Funcion no existente", this.linea, this.col)
         }
@@ -41,13 +44,14 @@ export default class Llamada extends Instruccion {
                 )
 
                 let resultado = declaracionParametro.interpretar(arbol, newTabla)
+                console.log("resultado declaracion parametro: ", resultado)
                 if (resultado instanceof Errores) return resultado
             }
             // interpretar la funcion a llamar
             let resultadoFuncion: any = busqueda.interpretar(arbol, newTabla)
             if (resultadoFuncion instanceof Errores) return resultadoFuncion
         }else{
-
+            console.log("entro a la llamada de la funcion")
             let nuevaTabla = new tablaSimbolo(tabla);
                 nuevaTabla.setNombre("Llamada función " + this.id);
                 if (busqueda.parametros.length != this.parametros.length) {
@@ -56,7 +60,7 @@ export default class Llamada extends Instruccion {
 
                 for (let i = 0; i < busqueda.parametros.length; i++) {
                     let nuevaVar = this.parametros[i].interpretar(arbol, nuevaTabla);
-                    let daclaraParam = new Declaracion(busqueda.parametros[i].tipo, this.linea, this.col, [busqueda.parametros[i].id], this.parametros[i]);
+                    let daclaraParam = new Declaracion(busqueda.parametros[i].tipo, this.linea, this.col, busqueda.parametros[i].id, this.parametros[i]);
 
                     let result = daclaraParam.interpretar(arbol, nuevaTabla);
 
@@ -64,7 +68,8 @@ export default class Llamada extends Instruccion {
 
                     
                     console.log("la nuevaVar es: "+nuevaVar);
-                    let varInterpretada = nuevaTabla.getVariable(busqueda.parametros[i].id);
+                    console.log(busqueda.parametros[i].id[0])
+                    let varInterpretada = nuevaTabla.getVariable(busqueda.parametros[i].id[0]);
 
                     if(varInterpretada != null){
                         if(busqueda.parametros[i].tipo.getTipo() != varInterpretada.getTipo().getTipo()){

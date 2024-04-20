@@ -181,11 +181,12 @@ export default class Aritmeticas extends Instruccion {
                     //caso cadena +  booleano
                     case tipoDato.BOOL:
                         this.tipoDato = new Tipo(tipoDato.CADENA)
-                        let resop2: number = 1;
-                        if (op2 == "false") {
-                            resop2 = 0
+                        if(op2){
+                            op2="true"
+                        }else{
+                            op2="false"
                         }
-                        return String(op1) + String(resop2)
+                        return String(op1) + op2
                     //caso cadena + caracter
                     case tipoDato.CARACTER:
                         this.tipoDato = new Tipo(tipoDato.CADENA)

@@ -50,6 +50,8 @@ const Metodo =require('./instrucciones/Metodo')
 const Llamada =require('./instrucciones/Llamada')
 //Verdadera clase de casteos
 const Cast=require('./expresiones/Cast')
+//Return
+const Return=require('./instrucciones/Return')
 %}
 
 // analizador lexico
@@ -134,8 +136,8 @@ const Cast=require('./expresiones/Cast')
 [0-9]+"."[0-9]+         return "DECIMAL"
 [0-9]+                  return "ENTERO"
 [a-z][a-z0-9_]*         return "ID"
-[\']((\\\')|[^\'\n])*[\']   {yytext=yytext.substring(1,yyleng-1); return "CARACTER";}
-[\"][^\"]*[\"]              {yytext=yytext.substr(1,yyleng-2); return 'CADENA'}
+[']\\\\[']|[']\\\"[']|[']\\\'[']|[']\\n[']|[']\\t[']|[']\\r[']|['].?['] {yytext=yytext.substr(1, yyleng-2); return 'CARACTER'}
+(\"(\\.|[^\\"])*\") {yytext=yytext.substr(1, yyleng-2); return 'CADENA';}
 
 
 
@@ -209,11 +211,11 @@ instruccion : arreglos                      {$$=$1;}
             | return                      {$$=$1;}
 ;
 //Return
-return: RETURN expresion PUNTOCOMA {$$=new Return.default($2, @1.first_line, @1.first_column);}
+return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.first_column,$2);}
 ;
 //Metodo
-Metodo: tipos ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, $4, $7, @1.first_line, @1.first_column);}
-      | tipos ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, [], $6, @1.first_line, @1.first_column);}
+Metodo: tipos ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
+      | tipos ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
 ;  
 pmetodo:pmetodo COMA tipos ID { $1.push({tipo:$3, id:[$4]}); $$=$1;} 
        | tipos ID {$$ = [{tipo:$1, id:[$2]}];}
@@ -317,7 +319,7 @@ declaracion : tipos declaracionesRecursivas PUNTOCOMA
             |tipos declaracionesRecursivas IGUAL ternario 
                   {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4);}
             |tipos declaracionesRecursivas IGUAL expresion PUNTOCOMA 
-                  {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4);}
+                  {$$= new Declaracion.default($1, @1.first_line, @1.first_column,$2,$4);console.log("Entro a la declaracion");}
 ;
 // Recursividad para declarar
 declaracionesRecursivas: declaracionesRecursivas COMA ID   {$1.push($3); $$=$1;}
@@ -349,8 +351,29 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | expresion MOD expresion          {$$ = new Aritmeticas.default(Aritmeticas.Operadores.MODULO, @1.first_line, @1.first_column, $1, $3);}
           | ENTERO                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.ENTERO), $1, @1.first_line, @1.first_column );}
           | DECIMAL                          {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.DECIMAL), $1, @1.first_line, @1.first_column );}
-          | CARACTER                          {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CARACTER),$1, @1.first_line, @1.first_column );}
-          | CADENA                           {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CADENA), $1, @1.first_line, @1.first_column );}
+          | CARACTER
+                  {
+                  var text = $1.substr(0,$1.length);
+                  text = text.replace(/\\n/g, "\n");
+                  text = text.replace(/\\\\/g, "\\");
+                  text = text.replace(/\\\"/g,"\"");
+                  text = text.replace(/\\r/g, "\r");
+                  text = text.replace(/\\t/g, "\t");
+                  text = text.replace(/\\\'/g, "'");
+
+                  $$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CARACTER), text, @1.first_line, @1.first_column);
+                  }
+          | CADENA                           
+                  {
+                  var text = $1.substr(0,$1.length);
+                  text = text.replace(/\\n/g, "\n");
+                  text = text.replace(/\\\\/g, "\\");
+                  text = text.replace(/\\\"/g,"\"");
+                  text = text.replace(/\\r/g, "\r");
+                  text = text.replace(/\\t/g, "\t");
+                  text = text.replace(/\\\'/g, "'");
+                  $$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.CADENA), text, @1.first_line, @1.first_column);
+                  }
           | BOOL                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL),$1, @1.first_line, @1.first_column );}   
           //Comparadores
           | TRUE                             {$$ = new Nativo.default(new Tipo.default(Tipo.tipoDato.BOOL), true, @1.first_line, @1.first_column ); }
@@ -363,7 +386,7 @@ expresion : expresion MAS expresion          {$$ = new Aritmeticas.default(Aritm
           | expresion IGUALIGUAL expresion   {$$ = new Relacionales.default(Relacionales.Relacional.IGUALIGUAL, $1, $3, @1.first_line, @1.first_column);}
           | expresion DIFERENTE expresion     {$$ = new Relacionales.default(Relacionales.Relacional.DIFERENTE, $1, $3, @1.first_line, @1.first_column);}
            //LLamada a funciones
-          | ID PAR1 pllamada PAR2 {$$=new Llamada.default($1, $3, @1.first_line, @1.first_column);}
+          | Llamada {$$=$1;console.log("HOla")}//{$$=new Llamada.default($1, $3, @1.first_line, @1.first_column);}
           //Para mientras no necesita punto y coma
           | ID INCREMENTO                            {$$ = new IncrementoDecremento.default($1, "++", @1.first_line, @1.first_column );}
           | ID DECREMENTO                            {$$ = new IncrementoDecremento.default($1, "--", @1.first_line, @1.first_column );}
@@ -408,6 +431,6 @@ tipos : INT                                     {$$ = new Tipo.default(Tipo.tipo
       | STD DOSPUNTOS DOSPUNTOS STRING          {$$ = new Tipo.default(Tipo.tipoDato.CADENA);}
       | BOOL                                    {$$ = new Tipo.default(Tipo.tipoDato.BOOL);}
       | CHAR                                    {$$ = new Tipo.default(Tipo.tipoDato.CARACTER);}
-      | VOID                              {$$ = new Tipo.default(Tipo.tipoDato.VOID);}
+      | VOID                                    {$$ = new Tipo.default(Tipo.tipoDato.VOID);}
 ;
 

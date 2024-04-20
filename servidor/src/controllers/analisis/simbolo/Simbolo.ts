@@ -24,6 +24,7 @@ export default class Simbolo {
     }
 
     public setId(id: string) {
+        
         this.id = id
     }
 
