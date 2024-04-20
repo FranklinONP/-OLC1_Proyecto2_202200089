@@ -33,6 +33,8 @@ export default class tablaSimbolo {
         return <Simbolo> this.getTabla().get(id.toLocaleLowerCase())
     }
 */
+    
+
     public getVariable(id: string) {
         for (let i: tablaSimbolo = this; i != null; i = i.getAnterior()) {
             let busqueda: Simbolo = <Simbolo>i.getTabla().get(id.toLocaleLowerCase())
@@ -74,10 +76,17 @@ export default class tablaSimbolo {
 
     public setArreglo(simbolo: Arreglo) {
         let busqueda: Arreglo = <Arreglo>this.getTabla().get(simbolo.getId().toLocaleLowerCase())
+        console.log("Desde Set Arreglo")
+        console.log(busqueda)
         if (busqueda == null) {
             this.tablaActual.set(simbolo.getId().toLocaleLowerCase(), simbolo)
+            console.log("True")
+            let busqueda = <Arreglo>this.getTabla().get(simbolo.getId().toLocaleLowerCase())
+            console.log(busqueda)   
+            console.log("True")
             return true
         }
+        console.log("False")
         return false
     }    
     //Vectores [][]
@@ -102,5 +111,6 @@ export default class tablaSimbolo {
         }
         return false
     }
+    
 
 }

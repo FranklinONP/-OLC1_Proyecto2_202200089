@@ -29,20 +29,6 @@ export default class DeclaracionArreglo extends Instruccion {
             let tamano = parseInt(this.tamano.interpretar(arbol, tabla))
              switch (this.tipoDato.getTipo()) {
                 case tipoDato.ENTERO:
-                    /*
-                    case tipo_dato.ENTERO:
-                    let arreglo: Nativo[] = new Array<Nativo>(tamano1Num);
-                    for (let i = 0; i < arreglo.length; i++) {
-                        arreglo[i] = new Nativo(this.tipo_dato, "0", 0, 0);
-                    }
-                    if (!tabla.setArreglo(new Arreglo(this.tipo_dato,this.fila,this.columna,this.identificador, arreglo))){
-                        let error = new Errores("Semántico", "La Variable Ya Existe.", this.fila, this.columna);
-                        arbol.agregarError(error);
-                        arbol.setConsola("Semántico: La Variable Ya Existe.\n")
-                        return error
-                    }
-                    break
-                    */
 
                     let arregloVacio: Nativo[] = new Array<Nativo>(tamano);
                     console.log("=============Tamano de Arreglo================")
@@ -53,6 +39,16 @@ export default class DeclaracionArreglo extends Instruccion {
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio, 0,false))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     }  
+                case tipoDato.DECIMAL:
+                    let arregloVacio1: Nativo[] = new Array<Nativo>(tamano);
+                    console.log("=============Tamano de Arreglo================")
+                    for (let i = 0; i < arregloVacio1.length; i++) {
+                        arregloVacio1[i] = new Nativo(this.tipoDato, "0", 0, 0);
+                    }
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arregloVacio1, 0,false))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }
                 case tipoDato.CADENA:
                     ///pasa algo
                     let tamano2=this.tamano.interpretar(arbol,tabla)
@@ -77,6 +73,17 @@ export default class DeclaracionArreglo extends Instruccion {
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arreglo5, 0,false))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     }
+                case tipoDato.BOOL:
+                    ///pasa algo
+                    let tamano4=this.tamano.interpretar(arbol,tabla)
+                    let arreglo6: Nativo[] = new Array<Nativo>(tamano);
+                    for (let i = 0; i < arreglo6.length; i++) {
+                        arreglo6[i] = new Nativo(this.tipoDato, 'false', 0, 0);
+                    }
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arreglo6, 0,false))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }
                 default:
                     console.log("Tipo de dato no soportado")
                     return new Errores("SEMANTICO", "Tipo de dato no soportado", this.linea, this.col)
@@ -90,7 +97,10 @@ export default class DeclaracionArreglo extends Instruccion {
                 console.log("Imprimiendo pisicon 3: "+this.valor[2])
                 if(!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,true))){
                     return new Errores("SEMANTICO", "No se realizar la funcon CSTR", this.linea, this.col)
+                }else{
+                    return
                 }
+                console.log("Desde Bandera")
 
             }
             switch (this.tipoDato.getTipo()) {
@@ -100,7 +110,11 @@ export default class DeclaracionArreglo extends Instruccion {
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,false))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     } 
-                                    
+                case tipoDato.DECIMAL:
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,false))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }              
                 case tipoDato.CADENA:
                     //Aca debe ir el ciclo para setear a los ids que traiga
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,false))){
@@ -108,11 +122,19 @@ export default class DeclaracionArreglo extends Instruccion {
                     } 
 
                 case tipoDato.CARACTER:
+                    console.log("Declarando arreglo de caracteres con lista de valores")
                     //Aca debe ir el ciclo para setear a los ids que traiga
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,false))){
                         return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
                     } 
+                    console.log("Declarando arreglo de caracteres con lista de valores")
+                case tipoDato.BOOL:
+                    //Aca debe ir el ciclo para setear a los ids que traiga
+                    if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador,this.valor,0,false))){
+                        return new Errores("SEMANTICO", "No se puede declarar el arreglo porque ya existia", this.linea, this.col)
+                    }
                     
+                
                 default:
                     console.log("Tipo de dato no soportado")
                     return new Errores("SEMANTICO", "Tipo de dato no soportado", this.linea, this.col)

@@ -37,12 +37,19 @@ export default class Arreglo {
     public getValor1(posicion: number) {
         //Capturo el error si esta fuera del rango
         let longitud = this.valor.length
-        if(this.bandera){
-            return this.valor[posicion]
+        console.log("===============================================")
+        console.log("==================GET VALOR1===================")
+        console.log("Posicion: "+posicion)
+        console.log(this.valor[posicion].valor)
+        console.log("===============================================")
+        return this.valor[posicion].valor
+        /*
+             if(this.bandera){
+            return this.valor[posicion].valor
         }
         if(posicion>=0 && posicion<=longitud){
              if(this.tamano!=0){
-            return this.valor[posicion]
+            return this.valor[posicion].valor
         }
         else if(this.tamano==0){
             return this.valor[posicion].valor
@@ -51,6 +58,8 @@ export default class Arreglo {
             return new Errores("SEMANTICO","Indice fuera de rango",0,0)
 
         }
+        */
+   
        
     }
 

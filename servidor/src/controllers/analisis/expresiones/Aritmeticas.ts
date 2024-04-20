@@ -3,6 +3,7 @@ import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
+import Contador from "../simbolo/Contador";
 
 export default class Aritmeticas extends Instruccion {
     private operando1: Instruccion | undefined
@@ -188,7 +189,18 @@ export default class Aritmeticas extends Instruccion {
                     //caso cadena + caracter
                     case tipoDato.CARACTER:
                         this.tipoDato = new Tipo(tipoDato.CADENA)
-                        return String(op1) + String(op2.charCodeAt(0));
+                        try {
+                            return String(op1) + String(op2.charCodeAt(0))
+                        } catch (error) {
+                            try {
+                                let cadena: string = op2.join('');
+                                return String(op1) + cadena
+                            }catch (error) {
+                                console.log("Error en la suma de cadena + cadena")
+                                return new Errores("Semantico", "Suma Invalida", this.linea, this.col)
+                            }
+                        }
+                        
                     //caso cadena + cadena
                     case tipoDato.CADENA:
                         this.tipoDato = new Tipo(tipoDato.CADENA)
@@ -500,7 +512,37 @@ export default class Aritmeticas extends Instruccion {
                 return new Errores("Semantico", "Negacion Unaria invalida", this.linea, this.col)
         }
     }
+    /*
+      getAST(anterior: string): string {
+        let contador = Contador.getInstancia()
+        let resultado = ""
+        if (this.operacion == Operadores.NEG) {
+            let nodoNegacion = `n${contador.get()}`
+            let nodoExp = `n${contador.get()}`
+            resultado += `${nodoNegacion}[label=\"-\"];\n`
+            resultado += `${nodoExp}[label=\"EXPRESION\"];\n`
+            resultado += `${anterior}->${nodoNegacion};\n`
+            resultado += `${anterior}->${nodoExp};\n`
+            resultado += this.operandoUnico?.getAST(nodoExp)
+            return resultado
+        }
+        let nodoExp1 = `n${contador.get()}`
+        let nodoOperacion = `n${contador.get()}`
+        let nodoExp2 = `n${contador.get()}`
 
+        resultado += `${nodoExp1}[label=\"EXPRESION\"];\n`
+        resultado += (this.operacion == Operadores.SUMA) ? (`${nodoOperacion}[label=\"+\"];\n`) : (`${nodoOperacion}[label=\"-\"];\n`)
+        resultado += `${nodoExp2}[label=\"EXPRESION\"];\n`
+        resultado += `${anterior}->${nodoExp1};\n`
+        resultado += `${anterior}->${nodoOperacion};\n`
+        resultado += `${anterior}->${nodoExp2};\n`
+        resultado += this.operando1?.getAST(nodoExp1)
+        resultado += this.operando2?.getAST(nodoExp2)
+        return resultado
+    }
+    
+    */
+  
 }
 
 export enum Operadores {

@@ -8,9 +8,11 @@ import DeclaracionMatriz from './analisis/instrucciones/DeclaracionMatriz';
 import Metodo from './analisis/instrucciones/Metodo';
 import Execute from './analisis/instrucciones/Execute';
 
-
+import Contador from './analisis/simbolo/Contador';
 
 export let listaErrores : Array<Errores> = []
+
+var AstDot: string
 
 class controller {
     public prueba(req: Request, res: Response) {
@@ -20,6 +22,7 @@ class controller {
     public interpretar(req: Request, res: Response) {
         listaErrores = new Array<Errores>
         try {
+            AstDot = ""
             let parser = require('./analisis/analizador')
             let ast = new Arbol(parser.parse(req.body.entrada))
             let tabla = new tablaSimbolo()
@@ -28,21 +31,15 @@ class controller {
             ast.setConsola("")
 
             let execute=null;
-             for (let i of ast.getInstrucciones()) {
-                if(i instanceof Errores) {
-                    listaErrores.push(i)
-                }
-                var resultado = i.interpretar(ast, tabla)
-                if (resultado instanceof Errores) {
-                    listaErrores.push(resultado)
-                }
-            }
-            /*
-           
+
+            console.log("Empieza")
             for (let i of ast.getInstrucciones()) {
                 if (i instanceof Metodo) {
+                    console.log("Metodo")
+                    console.log(i.id)
                     i.id = i.id.toLocaleLowerCase()
                     ast.addFunciones(i)
+                    console.log("Sale metodo")
                 }
                 if(i instanceof Declaracion){
                     i.interpretar(ast, tabla)
@@ -60,26 +57,15 @@ class controller {
                     execute = i
                 }
             }
-            
+            console.log("Termina")
             if(execute != null){
+                console.log("Ejecutar")
                 execute.interpretar(ast,tabla)
                 console.log(tabla)
-                // manejo de errores
-                /*
-                for(let i of ast.getInstrucciones()) {
-                    if(i instanceof Execute) {
-                    let resultado = i.interpretar (ast, tabla)
-                    if(resultado instanceof Errores) {
-                    listaErrores.push(resultado)
-                    //ast.setConsola((<Errores>resultado).obtenerError\())
-                    }
-                    }
-                    }
-                
-                
+                // manejo de errores   
+            
             }
-            */
-
+            //Vuelvo a recorrer para encontrar errores
             console.log(tabla)
             console.log(listaErrores)
             res.send({ "Respuesta": ast.getConsola() })

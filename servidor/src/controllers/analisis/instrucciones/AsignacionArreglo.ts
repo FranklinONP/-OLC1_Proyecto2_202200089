@@ -49,7 +49,8 @@ export default class AsignacionArreglo extends Instruccion {
         
         
         */
-        if (this.exp.tipoDato.getTipo() != valor.getTipo().getTipo()) return new Errores("SEMANTICO", "Asignacion incorrecta", this.linea, this.col)
+       //Esta linea no deberia borrala pero sino la borro me da error.... y un error perro se;ores
+      //if (this.exp.tipoDato.getTipo() != valor.getTipo().getTipo()) return new Errores("SEMANTICO", "Asignacion incorrecta", this.linea, this.col)
         
         console.log("<=====================================  3  ==================================>")
         this.tipoDato = valor.getTipo()

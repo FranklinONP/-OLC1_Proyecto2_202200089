@@ -4,6 +4,7 @@ import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
+import Nativo from '../expresiones/Nativo'
 
 export default class Casteos extends Instruccion{
     private tipoCasteo: TipoCasteo
@@ -60,7 +61,19 @@ export default class Casteos extends Instruccion{
             case tipoDatoCasteo.CSTR:
                 if(this.valor.tipoDato.getTipo() == 4){
                     console.log("Funcion CSTR()")
-                    return this.valor.interpretar(arbol,tabla).split('')
+                    console.log("+++++++++++++++++++++++++++++")
+                    console.log(this.valor.interpretar(arbol,tabla).split(''))
+                    console.log("+++++++++++++++++++++++++++++")
+                    //NewValor=new Nativo(this.tipoDato,NewValor,0,0)
+
+                    let NewValor = this.valor.interpretar(arbol,tabla).split('')
+
+                    const NewValor_nativo: Nativo[] = [];
+                    for (const elemento of NewValor) {
+                        const nativo: Nativo = new Nativo(this.tipoDato, elemento, 0, 0);
+                        NewValor_nativo.push(nativo);
+                    }
+                    return NewValor_nativo
                 }
             
         }      
