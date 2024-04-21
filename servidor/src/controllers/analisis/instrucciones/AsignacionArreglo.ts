@@ -67,4 +67,8 @@ export default class AsignacionArreglo extends Instruccion {
 
 
     }
+    getAST(anterior: string): string {
+        let resultado="Asignacion Arreglo"
+        return resultado
+    }
 }

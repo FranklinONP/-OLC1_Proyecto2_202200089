@@ -35,4 +35,9 @@ export default class AccesoMatriz extends Instruccion {
         
         return valorVariable.getValor1(pos1,pos2)//.valor
     }
+    
+    getAST(anterior: string): string {
+        let resultado="Acceso Matriz"
+        return resultado
+    }
 }

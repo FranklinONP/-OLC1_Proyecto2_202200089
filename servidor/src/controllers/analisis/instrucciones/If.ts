@@ -42,6 +42,10 @@ export default class If extends Instruccion {
 
 
     }
+    getAST(anterior: string): string {
+        let resultado=""
+        return resultado
+    }
 }
 
 /*

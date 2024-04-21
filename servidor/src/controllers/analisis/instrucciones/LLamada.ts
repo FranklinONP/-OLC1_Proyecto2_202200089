@@ -1,100 +1,126 @@
+
+import AccesoVar from "../expresiones/AccesoVar";
+
+// import MetodoFunciones from "./metodo.funciones";
+import Metodo from "./Metodo";
+import AsignacionArreglo from "./AsignacionArreglo";
+
 import { Instruccion } from "../abstracto/Instruccion";
 import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
-import Tipo, { tipoDato } from "../simbolo/Tipo";
+import simbolo from "../simbolo/Simbolo";
+import Tipo, { tipoDato } from '../simbolo/Tipo'
+import Return from "./Return";
 import Declaracion from "./Declaracion";
-import Metodo from "./Metodo";
+import Funcion from "./Funcion";
+
+import { listaErrores } from "../../../controllers/indexController";
 
 export default class Llamada extends Instruccion {
-
     private id: string
-    private parametros: Instruccion[]
+    private params: Instruccion[]
 
-    constructor(id: string, parametros: Instruccion[], linea: number, col: number) {
-        super(new Tipo(tipoDato.VOID), linea, col)
+    constructor(id: string, linea:number, columna: number, params: Instruccion[]){
+        super(new Tipo(tipoDato.VOID), linea,columna)
         this.id = id
-        this.parametros = parametros
+        this.params = params
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        console.log("---")
         let busqueda = arbol.getFuncion(this.id)
-        //console.log(busqueda)
-        console.log("-----")
-        if (busqueda == null) {
-            return new Errores("SEMANTICO", "Funcion no existente", this.linea, this.col)
-        }
-        this.tipoDato.setTipo(busqueda.tipoDato.getTipo())
-        if (busqueda instanceof Metodo) {
 
-            if(busqueda.tipoDato.getTipo()==tipoDato.VOID){
-                let newTabla = new tablaSimbolo(tabla);
-                newTabla.setNombre("Metodo: "+this.id)
-            //validacion parametros
-            if (busqueda.parametros.length != this.parametros.length) {
-                return new Errores("SEMANTICO", "Parametros invalidos", this.linea, this.col)
+        if(busqueda == null) return new Errores("Semantico", "La funcion con id: "+this.id+" no existe.", this.linea, this.col)
+
+        this.tipoDato = busqueda.tipoDato
+
+        if(busqueda instanceof Metodo) {
+            // if(busqueda.tipoS == "Metodo") {
+            let metodo = <Metodo>busqueda
+            let tablaN = new tablaSimbolo(tabla)
+            tablaN.setNombre("Llamada metodo: "+this.id)
+
+            if(metodo.parametros.length < this.params.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
+            if(metodo.parametros.length > this.params.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
+                
+            for (let i = 0; i < metodo.parametros.length; i++) {
+                let decla
+                //if(metodo.parametros[i].accion == 2) {
+                //    decla = new AsignacionArreglo(this.linea, this.col, metodo.parametros[i].tipo, metodo.parametros[i].id[0], this.params[i], false, undefined, false)
+                // }else if (metodo.parametros[i].vdd && Array.isArray(this.params[i])){
+                //     decla = new Vector2D(metodo.linea, metodo.columna, metodo.parametros[i].tipoD, metodo.parametros[i].id[0], [], [], this.params[i] ,null, false )
+                //}else{
+                    decla = new Declaracion(metodo.parametros[i].tipo, this.linea, this.col, metodo.parametros[i].id, this.params[i])
+                //}
+                
+                let resultado = decla.interpretar(arbol, tablaN)
+                if(resultado instanceof Errores) return resultado
+
+                // let variable = tablaN.getVariable(busqueda.parametros[i].id[0])
+                // if(variable != null) {
+                //     if(variable.getTipo().getTipo() != this.params[i].tipoD.getTipo()) {
+                //         return new Errores("Semantico", "Parametro "+i+" es de diferente tipo al que se esperaba", this.linea, this.columna) 
+                //     }else{
+                //         variable.setValor(resultado)
+                //     }
+                // }else {
+                //     return new Errores("Semantico", "Varible con ID "+busqueda.parametros[i].id[0]+" no existe", this.linea, this.columna)
+                // }
+                
             }
+            // INTERPRETAMOS LA FUNCION A LLAMAR
+            let resultadoM: any = metodo.interpretar(arbol, tablaN)
+            if(resultadoM instanceof Errores) return resultadoM
 
-            // es igual al run en su mayoria :D
-            for (let i = 0; i < busqueda.parametros.length; i++) {
-                let declaracionParametro = new Declaracion(
-                    busqueda.parametros[i].tipo, this.linea, this.col,
-                    busqueda.parametros[i].id, this.parametros[i]
-                )
+        }else if(busqueda instanceof Funcion) {
+            let funcion = <Funcion>busqueda
+            let tablaN = new tablaSimbolo(tabla)
+            tablaN.setNombre("Llamada funcion: "+this.id)
 
-                let resultado = declaracionParametro.interpretar(arbol, newTabla)
-                console.log("resultado declaracion parametro: ", resultado)
-                if (resultado instanceof Errores) return resultado
-            }
-            // interpretar la funcion a llamar
-            let resultadoFuncion: any = busqueda.interpretar(arbol, newTabla)
-            if (resultadoFuncion instanceof Errores) return resultadoFuncion
-        }else{
-            console.log("entro a la llamada de la funcion")
-            let nuevaTabla = new tablaSimbolo(tabla);
-                nuevaTabla.setNombre("Llamada función " + this.id);
-                if (busqueda.parametros.length != this.parametros.length) {
-                    return new Errores('Semántico', 'La cantidad de parametros no coincide con la función ' + this.id, this.linea, this.col);
-                }
+            if(funcion.parametros.length < this.params.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
+            if(funcion.parametros.length > this.params.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
+                
+            for (let i = 0; i < funcion.parametros.length; i++) {
+                let varN = this.params[i].interpretar(arbol, tabla)
+                if(varN instanceof Errores) return varN
+                let decla
 
-                for (let i = 0; i < busqueda.parametros.length; i++) {
-                    let nuevaVar = this.parametros[i].interpretar(arbol, nuevaTabla);
-                    let daclaraParam = new Declaracion(busqueda.parametros[i].tipo, this.linea, this.col, busqueda.parametros[i].id, this.parametros[i]);
+                //if(funcion.parametros[i].accion == 2) {
+                    //tipo: Tipo, linea: number, col: number, id: string , valor: Instruccion[]|any,tamano: Instruccion,bandera: boolean
+                   // decla = new AsignacionArreglo( funcion.parametros[i].tipo, 00, this.col,funcion.parametros[i].id[0], this.params[i])
+                // }else if (metodo.parametros[i].vdd && Array.isArray(this.params[i])){
+                //     decla = new Vector2D(metodo.linea, metodo.columna, metodo.parametros[i].tipoD, metodo.parametros[i].id[0], [], [], this.params[i] ,null, false )
+                //}else{
+                    decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
+               // }
+                //let decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.columna, funcion.parametros[i].id, this.params[i])
 
-                    let result = daclaraParam.interpretar(arbol, nuevaTabla);
+                let resultado = decla.interpretar(arbol, tablaN)
+                if(resultado instanceof Errores) return resultado
 
-                    if (result instanceof Errores) return result;
 
-                    
-                    console.log("la nuevaVar es: "+nuevaVar);
-                    console.log(busqueda.parametros[i].id[0])
-                    let varInterpretada = nuevaTabla.getVariable(busqueda.parametros[i].id[0]);
+                let variable = tablaN.getVariable(funcion.parametros[i].id[0])
 
-                    if(varInterpretada != null){
-                        if(busqueda.parametros[i].tipo.getTipo() != varInterpretada.getTipo().getTipo()){
-                            return new Errores('Semántico', 'El tipo de parametro no coincide con la función ' + this.id, this.linea, this.col);
-                        }else{
-                            varInterpretada.setValor(nuevaVar);  
-                            console.log("la var interpretada es:"+varInterpretada.getValor());
-                        }
+                if(variable != null) {
+                    if(variable.getTipo().getTipo() != this.params[i].tipoDato.getTipo()) {
+                        return new Errores("Semantico", "Parametro "+i+" es de diferente tipo al que se esperaba", this.linea, this.col) 
                     }else{
-                        return new Errores('Semántico', 'La variable ' + busqueda.parametros[i].id + ' no existe en la función ' + this.id, this.linea, this.col);
+                        variable.setValor(varN)
                     }
-
+                }else {
+                    return new Errores("Semantico", "Varible con ID "+funcion.parametros[i].id[0]+" no existe", this.linea, this.col)
                 }
-
-                let resultFunc: any = busqueda.interpretar(arbol, nuevaTabla);
-                if (resultFunc instanceof Errores) return resultFunc;
-                //this.tipoDato.setTipo(busqueda.valorRetorno.tipoDato.getTipo());
-                //console.log("el valor de retorno es:",busqueda.valorRetorno.tipoDato.getTipo());
-                //this.tipoDato.setTipo(busqueda.valorRetorno.tipoDato.getTipo());
-                return busqueda.interpretar(arbol, nuevaTabla);
-            
-
-
-
+                
+            }
+            // this.tipoD.setTipo(funcion.tipoD.getTipo())
+            let resultadoF: any = funcion.interpretar(arbol, tablaN)
+            if(resultadoF instanceof Errores) return resultadoF
+            return resultadoF
         }
-        }
+        // }
+    }
+    getAST(anterior: string): string {
+        let resultado="Metodo"
+        return resultado
     }
 }

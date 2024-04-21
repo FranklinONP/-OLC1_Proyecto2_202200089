@@ -23,7 +23,7 @@ export default class Print extends Instruccion {
     /*
         PRINT, impresion, (, EXPRESION, ), ;
     */
-   /*
+   
          getAST(anterior: string): string {
             let contador = Contador.getInstancia()
             let nodoPrint = `n${contador.get()}`
@@ -50,6 +50,6 @@ export default class Print extends Instruccion {
             resultado += this.expresion.getAST(nodoExp)
             return resultado
         }
-   */
+   
   
 }

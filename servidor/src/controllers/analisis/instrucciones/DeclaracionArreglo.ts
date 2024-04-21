@@ -142,4 +142,9 @@ export default class DeclaracionArreglo extends Instruccion {
         }
 
     }
-}}
+}
+getAST(anterior: string): string {
+    let resultado="Dec Arreglo"
+    return resultado
+}
+}

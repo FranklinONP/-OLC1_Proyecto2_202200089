@@ -112,6 +112,10 @@ export default class ExpLogicas extends Instruccion {
         }
 
     }
+    getAST(anterior: string): string {
+        let resultado="ExpLogicas"
+        return resultado
+    }
 }
 
 export enum Logico {

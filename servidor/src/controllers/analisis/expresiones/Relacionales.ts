@@ -265,7 +265,10 @@ export default class Relacionales extends Instruccion {
             }
         
         }
-
+        getAST(anterior: string): string {
+            let resultado="Acceso Var"
+            return resultado
+        }
 }
 
 export enum Relacional {

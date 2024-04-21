@@ -61,4 +61,8 @@ export default class Switch extends Instruccion {
              
         }      
     }
+    getAST(anterior: string): string {
+        let resultado="Swtich"
+        return resultado
+    }
 }

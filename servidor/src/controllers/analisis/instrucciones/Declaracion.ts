@@ -83,4 +83,9 @@ export default class Declaracion extends Instruccion {
         }
 
     }
+    getAST(anterior: string): string {
+        let resultado="Declaracion"
+        return resultado
+    }
+    
 }

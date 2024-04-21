@@ -12,7 +12,24 @@ export default class Tipo {
     public getTipo() {
         return this.tipo
     }
-
+    public getNombreTipo(): string {
+        switch (this.tipo) {
+            case tipoDato.ENTERO:
+                return "ENTERO"
+            case tipoDato.DECIMAL:
+                return "DECIMAL"
+            case tipoDato.BOOL:
+                return "BOOLEANO"
+            case tipoDato.CARACTER:
+                return "CARACTER"
+            case tipoDato.CADENA:
+                return "CADENA"
+            case tipoDato.VOID:
+                return "VOID"
+            default:
+                return "Tipo No Valido"
+        }
+    }
 }
 
 export enum tipoDato {

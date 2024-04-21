@@ -15,6 +15,7 @@ class router {
         this.router.get('/errores', indexController.getErrores)
         //Probar si manda todos los errroes o solo el ultimo
         //sino importo la lista de errrores y le hago directamente push
+        this.router.post('/generar_reporte_tablas', indexController.generar_reporte_tablas)
     }
 }
 

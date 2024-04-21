@@ -25,7 +25,7 @@ export default class Nativo extends Instruccion {
         n10[label=...];\n
     */
 
-    /*
+    
           getAST(anterior: string): string {
             let contador = Contador.getInstancia()
             let nodoNativo = `n${contador.get()}`
@@ -36,7 +36,7 @@ export default class Nativo extends Instruccion {
             resultado += `${anterior}->${nodoNativo};\n`
             return resultado
         }
-    */
+    
 
   
 }

@@ -4,6 +4,7 @@ import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
 import Break from "./Break";
+import Return from "./Return";
 
 
 export default class Else extends Instruccion {
@@ -51,12 +52,19 @@ else{
 
         let newTabla = new tablaSimbolo(tabla)
         newTabla.setNombre("Sentencia IF")
+        arbol.agregarTabla(newTabla)
+        /*
+        let nueva_tabla = new tablaSimbolo(tabla)
+        nueva_tabla.setNombre("DoWhile")
+        arbol.agregarTabla(nueva_tabla)
+         */
 
         if (cond) {
             for (let i of this.instrucciones) {
                 if (i instanceof Break) return i;
                 let resultado = i.interpretar(arbol, newTabla)
                 if (resultado instanceof Break) return;// Se lo acabo de poner
+                if(resultado instanceof Return) return;
             }
         }else{
             //Interpretar el else
@@ -68,5 +76,9 @@ else{
             }else{console.log("No hay instrucciones en el else")}
             
         }
+    }
+    getAST(anterior: string): string {
+        let resultado="If"
+        return resultado
     }
 }

@@ -61,6 +61,28 @@ function App() {
       });
     }
 
+    function reporte_tabla() {
+      fetch('http://localhost:4000/generar_reporte_tablas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ entrada: editorRef.current.getValue() }),
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'ReporteTablas.html';
+          a.click();
+        })
+        .catch((error) => {
+          alert("ERROR")
+          console.error('Error:', error);
+        });
+    }
+
   const CargarArchivo = (event) => {
     var file = event.target.files[0];
     var reader = new FileReader();
@@ -90,6 +112,7 @@ function App() {
   };
 
   const handleCloseTablaSimbolosModal = () => {
+   
     setShowTablaSimbolosModal(false);
   };
 
@@ -140,7 +163,7 @@ function App() {
                 type="button"
                 value="Tabla de Símbolos"
                 className="btn btn-primary btn-lg"
-                onClick={mostrarTablaSimbolosModal}
+                onClick={reporte_tabla}
               />
             </div>
             <div className="col">

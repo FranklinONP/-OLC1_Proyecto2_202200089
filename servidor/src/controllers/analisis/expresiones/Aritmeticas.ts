@@ -191,7 +191,7 @@ export default class Aritmeticas extends Instruccion {
                     case tipoDato.CARACTER:
                         this.tipoDato = new Tipo(tipoDato.CADENA)
                         try {
-                            return String(op1) + String(op2.charCodeAt(0))
+                            return String(op1) + String(op2)
                         } catch (error) {
                             try {
                                 let cadena: string = op2.join('');
@@ -513,7 +513,7 @@ export default class Aritmeticas extends Instruccion {
                 return new Errores("Semantico", "Negacion Unaria invalida", this.linea, this.col)
         }
     }
-    /*
+    
       getAST(anterior: string): string {
         let contador = Contador.getInstancia()
         let resultado = ""
@@ -542,7 +542,7 @@ export default class Aritmeticas extends Instruccion {
         return resultado
     }
     
-    */
+    
   
 }
 

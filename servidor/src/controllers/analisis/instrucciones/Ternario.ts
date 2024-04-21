@@ -173,4 +173,8 @@ export default class Ternario extends Instruccion {
             return new Errores("Semantico", "Error la condicion no coincide con un operador ternario", this.linea, this.col)
         }
     }
+    getAST(anterior: string): string {
+        let resultado=""
+        return resultado
+    }
 }

@@ -32,4 +32,8 @@ export default class AsignacionVar extends Instruccion {
 
 
     }
+    getAST(anterior: string): string {
+        let resultado="Asiganacion Var"
+        return resultado
+    }
 }

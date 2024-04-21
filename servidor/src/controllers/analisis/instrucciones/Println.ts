@@ -23,7 +23,7 @@ export default class Println extends Instruccion {
         PRINT, impresion, (, EXPRESION, ), ;
     */
 
-        /*
+        
          getAST(anterior: string): string {
             let contador = Contador.getInstancia()
             let nodoPrint = `n${contador.get()}`
@@ -51,6 +51,6 @@ export default class Println extends Instruccion {
             return resultado
 
         }
-        */
-       
+        
+    
 }

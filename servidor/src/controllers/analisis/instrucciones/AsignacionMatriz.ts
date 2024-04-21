@@ -44,4 +44,8 @@ export default class AsignacionMatriz extends Instruccion {
 
 
     }
+    getAST(anterior: string): string {
+        let resultado="Asignacion Matriz"
+        return resultado
+    }
 }

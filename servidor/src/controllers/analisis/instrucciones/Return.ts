@@ -25,4 +25,8 @@ export default class Return extends Instruccion{
         }
         return this;
     }
+    getAST(anterior: string): string {
+        let resultado="Return"
+        return resultado
+    }
 }

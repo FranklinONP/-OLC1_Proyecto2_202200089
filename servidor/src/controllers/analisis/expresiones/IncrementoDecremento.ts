@@ -42,4 +42,8 @@ export default class IncrementoDecremento extends Instruccion{
         }
         return valorVariable.getValor()
     }
+    getAST(anterior: string): string {
+        let resultado="Incremento Decremento"
+        return resultado
+    }
 }

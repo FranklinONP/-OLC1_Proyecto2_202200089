@@ -45,6 +45,9 @@ export default class ElseIf extends Instruccion {
         
 
     }
+    getAST(anterior: string): string {
+        return "Hoka"
+    }
 }
 
 /*

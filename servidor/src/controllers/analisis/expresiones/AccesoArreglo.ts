@@ -27,4 +27,8 @@ export default class AccesoArreglo extends Instruccion {
         console.log("Valor: "+valorVariable.getValor1(pos))
         return valorVariable.getValor1(pos)
     }
+    getAST(anterior: string): string {
+        let resultado="Acceso Arreglo"
+        return resultado
+    }
 }

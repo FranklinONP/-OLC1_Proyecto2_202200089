@@ -73,5 +73,8 @@ export default class Cast extends Instruccion{
             
         }      
 }
-
+getAST(anterior: string): string {
+    let resultado="Cast"
+    return resultado
+}
 }

@@ -43,4 +43,8 @@ export default class For extends Instruccion{
             }
         }
     }
+    getAST(anterior: string): string {
+        let resultado="For"
+        return resultado
+    }
 }

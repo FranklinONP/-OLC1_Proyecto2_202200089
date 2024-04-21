@@ -20,4 +20,8 @@ export default class AccesoVar extends Instruccion {
         this.tipoDato = valorVariable.getTipo()
         return valorVariable.getValor()
     }
+    getAST(anterior: string): string {
+        let resultado="Acceso Var"
+        return resultado
+    }
 }

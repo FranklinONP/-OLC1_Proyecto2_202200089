@@ -45,7 +45,8 @@ const Casteo=require('./expresiones/Casteos')
 //Execute
 const Execute =require('./instrucciones/Execute')
 //Funciones
-const Metodo =require('./instrucciones/Metodo')
+const Funcion =require('./instrucciones/Funcion')
+const Metodo = require('./instrucciones/Metodo')
 // LLamada
 const Llamada =require('./instrucciones/Llamada')
 //Verdadera clase de casteos
@@ -209,14 +210,20 @@ instruccion : arreglos                      {$$=$1;}
             | Metodo                       {$$=$1;}
             | Llamada                      {$$=$1;}
             | return                      {$$=$1;}
+            | Funcion                     {$$=$1;}
 ;
 //Return
 return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.first_column,$2);}
+      | RETURN PUNTOCOMA   {$$ = new Break.default(@1.first_line, @1.first_column);}
 ;
 //Metodo
-Metodo: tipos ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
-      | tipos ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
+Metodo: VOID ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
+      | VOID ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
 ;  
+//Funcion
+Funcion: tipos ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Funcion.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
+      | tipos ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Funcion.default($1, $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
+;
 pmetodo:pmetodo COMA tipos ID { $1.push({tipo:$3, id:[$4]}); $$=$1;} 
        | tipos ID {$$ = [{tipo:$1, id:[$2]}];}
 ;
@@ -431,6 +438,6 @@ tipos : INT                                     {$$ = new Tipo.default(Tipo.tipo
       | STD DOSPUNTOS DOSPUNTOS STRING          {$$ = new Tipo.default(Tipo.tipoDato.CADENA);}
       | BOOL                                    {$$ = new Tipo.default(Tipo.tipoDato.BOOL);}
       | CHAR                                    {$$ = new Tipo.default(Tipo.tipoDato.CARACTER);}
-      | VOID                                    {$$ = new Tipo.default(Tipo.tipoDato.VOID);}
+      //| VOID                                    {$$ = new Tipo.default(Tipo.tipoDato.VOID);}
 ;
 

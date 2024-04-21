@@ -37,4 +37,8 @@ export default class DoWhile extends Instruccion{
             }
         }while(this.condicion.interpretar(arbol, tabla));
     }
+    getAST(anterior: string): string {
+        let resultado="DoWhile"
+        return resultado
+    }
 }

@@ -12,4 +12,9 @@ export default class Break extends Instruccion {
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
         return;
     }
+
+    getAST(anterior: string): string {
+        let resultado="Break"
+        return resultado
+    }
 }

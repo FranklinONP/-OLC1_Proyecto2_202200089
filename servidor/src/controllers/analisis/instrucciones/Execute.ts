@@ -57,6 +57,10 @@ export default class Execute extends Instruccion {
 
         }
     }
+    getAST(anterior: string): string {
+        let resultado="Execute"
+        return resultado
+    }
 }
 
 /*

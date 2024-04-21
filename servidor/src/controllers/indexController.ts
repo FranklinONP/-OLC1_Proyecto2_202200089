@@ -7,7 +7,7 @@ import DeclaracionArreglo from './analisis/instrucciones/DeclaracionArreglo';
 import DeclaracionMatriz from './analisis/instrucciones/DeclaracionMatriz';
 import Metodo from './analisis/instrucciones/Metodo';
 import Execute from './analisis/instrucciones/Execute';
-
+import * as path from 'path';
 import Contador from './analisis/simbolo/Contador';
 
 export let listaErrores : Array<Errores> = []
@@ -29,6 +29,12 @@ class controller {
             tabla.setNombre("Ejemplo1")
             ast.setTablaGlobal(tabla)
             ast.setConsola("")
+
+            for(let m of ast.getInstrucciones()){
+                if(m instanceof Errores){
+                    listaErrores.push(m)
+                }
+            }
 
             let execute=null;
 
@@ -55,6 +61,7 @@ class controller {
                 }
                 if (i instanceof Execute){
                     execute = i
+                   
                 }
             }
             console.log("Termina")
@@ -63,7 +70,6 @@ class controller {
                 execute.interpretar(ast,tabla)
                 console.log(tabla)
                 // manejo de errores   
-            
             }
             //Vuelvo a recorrer para encontrar errores
             console.log(tabla)
@@ -81,6 +87,25 @@ class controller {
             res.json({ "listaErrores": listaErrores })
         } catch (err: any) {    
             res.send({ "Error": "Ya no sale compi2" })
+        }
+    }
+    public generar_reporte_tablas(req: Request, res: Response) {
+        try {
+            let parser = require('./analisis/analizador')
+            let ArbolAst = new Arbol(parser.parse(req.body.entrada))
+            let Tabla_Simbolos = new tablaSimbolo()
+            Tabla_Simbolos.setNombre("Tabla Global")
+            ArbolAst.setTablaGlobal(Tabla_Simbolos)
+            ArbolAst.agregarTabla(Tabla_Simbolos)
+            ArbolAst.setConsola("")
+            for (let i of ArbolAst.getInstrucciones()) {
+                var resultado = i.interpretar(ArbolAst, Tabla_Simbolos)
+            }
+            ArbolAst.generarReporteTablas()
+            res.sendFile(path.resolve('ReporteTablas.html'));
+        } catch (err: any) {
+            console.log(err)
+            res.send({ "Error": "Error Al Generar Reporte De Tablas De Simbolos." })
         }
     }
 

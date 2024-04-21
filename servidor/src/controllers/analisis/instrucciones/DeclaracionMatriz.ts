@@ -68,4 +68,9 @@ export default class DeclaracionMatriz extends Instruccion {
         }
 
     }
+}
+
+getAST(anterior: string): string {
+    let resultado="DecMatriz"
+    return resultado
 }}

@@ -78,5 +78,9 @@ export default class Casteos extends Instruccion{
             
         }      
 }
+getAST(anterior: string): string {
+    let resultado="Casteos"
+    return resultado
+}
 
 }
