@@ -31,13 +31,15 @@ export default class Println extends Instruccion {
             let nodoP1 = `n${contador.get()}`
             let nodoExp = `n${contador.get()}`
             let nodoP2 = `n${contador.get()}`
+            let nodoP3 = `n${contador.get()}`
             let nodopc = `n${contador.get()}`
     
-            let resultado = `${nodoPrint}[label=\"PRINT\"];\n`
-            resultado += `${nodoImprimir}[label=\"imprimir\"];\n`
-            resultado += `${nodoP1}[label=\"(\"];\n`
-            resultado += `${nodoExp}[label=\"EXPRESION\"];\n`
-            resultado += `${nodoP2}[label=\")\"];\n`
+            let resultado = `${nodoPrint}[label=\"IMPRESION\"];\n`
+            resultado += `${nodoImprimir}[label=\"cout\"];\n`
+            resultado += `${nodoP1}[label=\"<<\"];\n`
+            resultado += `${nodoExp}[label=\"expresion\"];\n`
+            resultado += `${nodoP2}[label=\"<<\"];\n`
+            resultado += `${nodoP3}[label=\"endl\"];\n`
             resultado += `${nodopc}[label=\";\"];\n`
     
             resultado += `${anterior}->${nodoPrint};\n`
@@ -45,6 +47,7 @@ export default class Println extends Instruccion {
             resultado += `${nodoPrint}->${nodoP1};\n`
             resultado += `${nodoPrint}->${nodoExp};\n`
             resultado += `${nodoPrint}->${nodoP2};\n`
+            resultado += `${nodoPrint}->${nodoP3};\n`
             resultado += `${nodoPrint}->${nodopc};\n`
     
             resultado += this.expresion.getAST(nodoExp)

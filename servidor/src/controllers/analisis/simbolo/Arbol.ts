@@ -65,13 +65,17 @@ export default class Arbol {
                     <th>Fila</th>
                     <th>Columna</th>
                 </tr>`;
+            let v=0;
             ins.getTabla().forEach((valor, clave) => {
                 html += `
                 <tr>
                     <td>${clave}</td>
                     <td>${valor.getTipo().getNombreTipo()}</td>
                     <td>${valor.getValor()}</td>
+                    <td>${v}</td>
+                    <td>${v+1}</td>
                 </tr>`;
+                v=v+1;
             });
             html += `</table>`;
         }

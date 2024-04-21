@@ -91,6 +91,7 @@ export default class Declaracion extends Instruccion {
 
         let declar = `n${contador.get()}`;
 
+        let tipoG = `n${contador.get()}`;
         let tipoD = `n${contador.get()}`;
         let ids = `n${contador.get()}`;
 
@@ -115,6 +116,7 @@ export default class Declaracion extends Instruccion {
         }else if(this.tipoDato.getTipo() == tipoDato.CARACTER){
             result += `${tipoD}[label="char"];\n`
         }
+        result += `${tipoG}[label="TIPOS DE DATOS"];\n`
 
         result += `${ids}[label="ID(S)"];\n`
 
@@ -123,12 +125,15 @@ export default class Declaracion extends Instruccion {
         }
 
         result += `${igual}[label="="];\n`
-        result += `${valor}[label="EXPRESION"];\n`
+        result += `${valor}[label="expresion"];\n`
         result += `${puntocoma}[label=";"];\n`
 
+       
         result += `${anterior} -> ${declar};\n`
         result += `${declar} -> ${ids};\n`
-        result += `${declar} -> ${tipoD};\n`
+        
+        result += `${declar} -> ${tipoG};\n`
+        result += `${tipoG} -> ${tipoD};\n`
         
         for(let i= 0; i < this.identificador.length; i++){
             result += `${ids} -> ${conjuntoID[i]};\n`

@@ -78,7 +78,7 @@ export default class DeclaracionArreglo extends Instruccion {
                     let tamano4=this.tamano.interpretar(arbol,tabla)
                     let arreglo6: Nativo[] = new Array<Nativo>(tamano);
                     for (let i = 0; i < arreglo6.length; i++) {
-                        arreglo6[i] = new Nativo(this.tipoDato, 'false', 0, 0);
+                        arreglo6[i] = new Nativo(this.tipoDato, 'true', 0, 0);
                     }
                     //Aca debe ir el ciclo para setear a los ids que traiga
                     if (!tabla.setArreglo(new Arreglo(this.tipoDato,this.identificador, arreglo6, 0,false))){
