@@ -1,6 +1,7 @@
 import { Instruccion } from "../abstracto/Instruccion";
 import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
+import Contador from "../simbolo/Contador";
 import Simbolo from "../simbolo/Simbolo";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from '../simbolo/Tipo'
@@ -32,8 +33,33 @@ export default class AsignacionVar extends Instruccion {
 
 
     }
+
     getAST(anterior: string): string {
-        let resultado="Asiganacion Var"
-        return resultado
+
+        let contador = Contador.getInstancia();
+        let result = "";
+
+
+        let padre = `n${contador.get()}`;
+        let variable = `n${contador.get()}`;
+        let varNombre = `n${contador.get()}`;
+        let igual = `n${contador.get()}`;
+        let asignacion = `n${contador.get()}`;
+
+        result += ` ${padre}[label="Asignacion de Variable"];\n`;
+        result += `${variable}[label="ID"];\n`;
+        result += `${varNombre}[label="${this.id}"];\n`;
+        result += `${igual}[label="="];\n`;
+        result += `${asignacion}[label="Expresion"];\n`;
+
+        result += ` ${anterior} -> ${padre};\n`;
+        result += `${padre} -> ${variable};\n`;
+        result += `${variable} -> ${varNombre};\n`;
+        result += `${padre} -> ${igual};\n`;
+        result += `${padre} -> ${asignacion};\n`;
+
+        result += this.exp.getAST(asignacion);
+
+        return result;
     }
 }

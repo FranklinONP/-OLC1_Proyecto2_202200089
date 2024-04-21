@@ -208,13 +208,13 @@ instruccion : arreglos                      {$$=$1;}
             | for                           {$$=$1;}
             | Execute                      {$$=$1;}
             | Metodo                       {$$=$1;}
-            | Llamada                      {$$=$1;}
+            | Llamada  PUNTOCOMA                      {$$=$1;}
             | return                      {$$=$1;}
             | Funcion                     {$$=$1;}
 ;
 //Return
 return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.first_column,$2);}
-      | RETURN PUNTOCOMA   {$$ = new Break.default(@1.first_line, @1.first_column);}
+      | RETURN PUNTOCOMA   {$$ = new Break.default(@1.first_line, @1.first_column,null);}
 ;
 //Metodo
 Metodo: VOID ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default(new Tipo.default(Tipo.tipoDato.VOID), $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
@@ -231,8 +231,8 @@ pmetodo:pmetodo COMA tipos ID { $1.push({tipo:$3, id:[$4]}); $$=$1;}
 Execute: EXECUTE ID PAR1 pllamada PAR2 PUNTOCOMA {$$=new Execute.default($2,$4, @1.first_line, @1.first_column);}
          |EXECUTE ID PAR1 PAR2 PUNTOCOMA            {$$=new Execute.default($2, [],@1.first_line, @1.first_column);}   
 ;
-Llamada: ID PAR1 pllamada PAR2 PUNTOCOMA {$$=new Llamada.default($1, $3, @1.first_line, @1.first_column);}
-        | ID PAR1 PAR2 PUNTOCOMA            {$$=new Llamada.default($1, [], @1.first_line, @1.first_column);}
+Llamada: ID PAR1 pllamada PAR2 {$$=new Llamada.default($1, $3, @1.first_line, @1.first_column);}
+        | ID PAR1 PAR2             {$$=new Llamada.default($1, [], @1.first_line, @1.first_column);}
 ;
 //Parametros
 pllamada : pllamada COMA expresion      {$1.push($3); $$=$1;} 
@@ -299,7 +299,7 @@ impresion :   COUT APERTURA_COUT expresion PUNTOCOMA         {$$= new Print.defa
 // 2D = tipo-fila-columna-id-valores-pos1-pos2
 arreglos:   tipos ID CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 PUNTOCOMA
                 {$$=new declaracionArreglo.default($1, @1.first_line, @1.first_column,$2,null,$9);}
-          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 ENTERO CORCHETE2 CORCHETE1 ENTERO CORCHETE2 PUNTOCOMA
+          | tipos ID CORCHETE1 CORCHETE2 CORCHETE1 CORCHETE2 IGUAL NEW tipos CORCHETE1 expresion CORCHETE2 CORCHETE1 expresion CORCHETE2 PUNTOCOMA
                 {$$=new declaracionMatriz.default($1,@1.first_line, @1.first_column,$2,null,$11,$14)} 
           // Mando la lista de valores
           | tipos ID CORCHETE1 CORCHETE2 IGUAL CORCHETE1 contenido CORCHETE2 PUNTOCOMA 

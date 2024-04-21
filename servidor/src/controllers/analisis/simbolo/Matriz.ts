@@ -6,13 +6,15 @@ export default class Matriz {
     private valor: any[][]
     private pos1:number
     private pos2:number
+    private bandera: boolean
 
-    constructor(tipo: Tipo, id: string, valor: any[][],pos1:number,pos2:number) {
+    constructor(tipo: Tipo, id: string, valor: any[][],pos1:number,pos2:number,bandera:boolean) {
         this.tipo = tipo
         this.id = id.toLocaleLowerCase()
         this.valor = valor
         this.pos1 = pos1
         this.pos2 = pos2
+        this.bandera = bandera
     }
 
     public getTipo(): Tipo {
@@ -34,20 +36,30 @@ export default class Matriz {
         return this.valor.map(fila => fila.map(nativo => nativo.valor));
     }
     public getValor1(pos1: number,pos2:number) {
-        //Creado vacio
-        if(this.pos1!=0 && this.pos2!=0){
-            return this.valor[pos1][pos2]
-        }
-        //Llenado al ser creado
-        else if(this.pos1==0 && this.pos2==0){
-            return this.valor[pos1][pos2].valor
-        }
+        console.log("Entro aqui")
+                return this.valor[pos1][pos2].valor
+
+        
 
     }
 
     public setValor(pos1:number,pos2:number,valor:any) {
         console.log("Desde Matriz.ts")
-        this.valor[pos1][pos2]=valor
+
+
+        try {
+            // Código que puede generar una excepción
+            
+             this.valor[pos1][pos2]=valor
+        } catch (error) {
+            // Manejo de la excepción
+            console.log("111")
+            console.log(this.valor) 
+            console.log(valor)   
+            this.valor[pos1][pos1]=valor
+            //let n: number = parseFloat(pos1.toString());
+            console.log("222")
+        }
     }
     
     public getTamano() {

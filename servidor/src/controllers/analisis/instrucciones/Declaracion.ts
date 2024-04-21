@@ -4,6 +4,8 @@ import Arbol from "../simbolo/Arbol";
 import Simbolo from "../simbolo/Simbolo";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from '../simbolo/Tipo'
+import Contador from "../simbolo/Contador";
+
 
 export default class Declaracion extends Instruccion {
     //private identificador: string
@@ -84,8 +86,61 @@ export default class Declaracion extends Instruccion {
 
     }
     getAST(anterior: string): string {
-        let resultado="Declaracion"
-        return resultado
+        let result = "";
+        let contador = Contador.getInstancia();
+
+        let declar = `n${contador.get()}`;
+
+        let tipoD = `n${contador.get()}`;
+        let ids = `n${contador.get()}`;
+
+        let conjuntoID = [];
+        for(let i= 0; i < this.identificador.length; i++){
+            conjuntoID.push(`n${contador.get()}`);
+
+        }
+        let igual = `n${contador.get()}`;
+        let valor = `n${contador.get()}`;
+        let puntocoma = `n${contador.get()}`;
+
+        result += `${declar}[label="DECLARACION DE VARIABLES"];\n`
+        if(this.tipoDato.getTipo() == tipoDato.ENTERO){
+            result += `${tipoD}[label="INT"];\n`
+        }else if(this.tipoDato.getTipo() == tipoDato.DECIMAL){
+            result += `${tipoD}[label="DOUBLE"];\n`
+        }else if(this.tipoDato.getTipo() == tipoDato.BOOL){
+            result += `${tipoD}[label="BOOL"];\n`
+        }else if(this.tipoDato.getTipo() == tipoDato.CADENA){
+            result += `${tipoD}[label="STD::STRING"];\n`
+        }else if(this.tipoDato.getTipo() == tipoDato.CARACTER){
+            result += `${tipoD}[label="char"];\n`
+        }
+
+        result += `${ids}[label="ID(S)"];\n`
+
+        for(let i= 0; i < this.identificador.length; i++){
+            result += `${conjuntoID[i]} [label = "${this.identificador[i]}"];\n`
+        }
+
+        result += `${igual}[label="="];\n`
+        result += `${valor}[label="EXPRESION"];\n`
+        result += `${puntocoma}[label=";"];\n`
+
+        result += `${anterior} -> ${declar};\n`
+        result += `${declar} -> ${ids};\n`
+        result += `${declar} -> ${tipoD};\n`
+        
+        for(let i= 0; i < this.identificador.length; i++){
+            result += `${ids} -> ${conjuntoID[i]};\n`
+        }
+
+        result += `${declar} -> ${igual};\n`
+        result += `${declar} -> ${valor};\n`
+        result += `${declar} -> ${puntocoma};\n`
+
+        this.valor.getAST(valor);
+
+        return result;
     }
     
 }

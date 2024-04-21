@@ -21,22 +21,21 @@ export default class Funcion extends Instruccion {
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
 
+        
+
         for (let i = 0; i < this.instrucciones.length; i++) {
             let varN = this.instrucciones[i].interpretar(arbol, tabla)
 
             if(varN instanceof Errores) return varN
             
             if(varN instanceof Return) {
-                if(varN.expresion != null){
+                if(varN.valor != null){
                     if(this.tipoDato.getTipo() != varN.tipoDato.getTipo()) return new Errores("Semantico", "El tipo de la funcion y del valor de retorno son diferentes", this.linea, this.col)
-                    return varN.expresion
+                    return varN.valor
                 }
             } 
-            
             if(i == this.instrucciones.length - 1) return new Errores("Semantico", "Debe de retornar un valor", this.linea, this.col)
-
         }
-
     }
 
     getAST(anterior: string): string {

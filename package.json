@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "graphviz-react": "^1.2.5",
+    "viz.js": "^2.1.2"
+  }
+}

@@ -76,6 +76,22 @@ class controller {
                 console.log(tabla)
                 // manejo de errores   
             }
+
+            let contador = Contador.getInstancia()
+            let cadena = "digraph ast{\n"
+            cadena += "nINICIO[label=\"INICIO\"];\n"
+            cadena += "nINSTRUCCIONES[label=\"INSTRUCCIONES\"];\n"
+            cadena += "nINICIO->nINSTRUCCIONES;\n"
+
+            for (let i of ast.getInstrucciones()) {
+                if (i instanceof Errores) continue
+                let nodo = `n${contador.get()}`
+                cadena += `${nodo}[label=\"INSTRUCCION\"];\n`
+                cadena += `nINSTRUCCIONES->${nodo};\n`
+                cadena += i.getAST(nodo)
+            }
+            cadena += "\n}"
+            AstDot = cadena
             //Vuelvo a recorrer para encontrar errores
             console.log(tabla)
             console.log(listaErrores)
@@ -84,6 +100,10 @@ class controller {
             console.log(err)
             res.send({ "Error": "Ya no sale compi1" })
         }
+    }
+
+    public ast(req: Request, res: Response) {
+        res.json({ "AST": AstDot })
     }
 
     public getErrores(req: Request, res: Response) {

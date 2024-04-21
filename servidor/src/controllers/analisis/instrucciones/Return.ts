@@ -1,32 +1,37 @@
+
 import { Instruccion } from "../abstracto/Instruccion";
 import Errores from "../excepciones/Errores";
 import Arbol from "../simbolo/Arbol";
-import tablaSimbolo from "../simbolo/tablaSimbolos";
-import Tipo, { tipoDato } from "../simbolo/Tipo";
+import Tipo, { tipoDato } from '../simbolo/Tipo'
+import tablaSimbolo from "../simbolo/tablaSimbolos";//import tablaSimbolo from "../simbolo/tablaSimbolos";
+import Funcion from "./Funcion"
 
-export default class Return extends Instruccion{
 
-    public expresion: Instruccion | undefined;
+export default class Return extends Instruccion {
+    private exp?: Instruccion
+    public valor = null
 
-    constructor(linea:number, columna:number,expresion?: Instruccion){
-        super(new Tipo(tipoDato.VOID), linea, columna);
-        this.expresion = expresion;
+    constructor(linea: number, columna: number, exp?: Instruccion) {
+        super(new Tipo(tipoDato.VOID), linea, columna)
+        this.exp = exp
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        console.log('RETURN---------------');
-        console.log(this.expresion);
-        if(this.expresion != undefined){
-            let result = this.expresion.interpretar(arbol, tabla);
-            console.log('RETURN---------------');
-            console.log(result);
-            this.tipoDato= this.expresion.tipoDato;
-            if(result instanceof Errores) return result;
+        if(this.exp) {
+            let val = this.exp.interpretar(arbol, tabla)
+            this.valor = val
+            console.log("Valor de return---------------------------------***")
+            console.log(val)
+            //if(valor instanceof Funcion){}
+            if(val instanceof Errores) return val
+            this.tipoDato.setTipo(this.exp.tipoDato.getTipo())
+            console.log("Valor de return---------------------------------***")
+            console.log(this.valor)
         }
-        return this;
+        return this
     }
+
     getAST(anterior: string): string {
-        let resultado="Return"
-        return resultado
+        return ""
     }
 }

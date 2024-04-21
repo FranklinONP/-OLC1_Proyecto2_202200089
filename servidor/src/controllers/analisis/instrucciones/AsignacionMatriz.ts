@@ -4,6 +4,7 @@ import Arbol from "../simbolo/Arbol";
 import Simbolo from "../simbolo/Simbolo";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from '../simbolo/Tipo'
+import Nativo from '../expresiones/Nativo'
 
 export default class AsignacionMatriz extends Instruccion {
     private id: string
@@ -35,11 +36,16 @@ export default class AsignacionMatriz extends Instruccion {
         //Agregar Manejo de Errores
         let pos2 = this.pos2.interpretar(arbol,tabla)
         //Agregar Manejo de Errores
+        this.pos1=pos1
+        this.pos2=pos2
 
 
         console.log("Desde AsignacionMatriz.ts")
         console.log("VALOR: ", NewValor)
         console.log("Posiciones Interpretadas: ", this.pos1, this.pos2)
+        NewValor=new Nativo(this.tipoDato,NewValor,0,0)
+        console.log("VALOR: ", NewValor)
+        console.log("Casi entrando al serValor")
         valor.setValor(pos1,pos2,NewValor)
 
 

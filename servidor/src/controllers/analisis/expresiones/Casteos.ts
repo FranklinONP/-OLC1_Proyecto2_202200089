@@ -27,7 +27,10 @@ export default class Casteos extends Instruccion{
             case tipoDatoCasteo.TOUPPER:
                 return this.valor.interpretar(arbol,tabla).toString().toUpperCase()
             case tipoDatoCasteo.ROUND:
-                return this.valor.interpretar(arbol,tabla).mathround()
+                console.log("ACA")
+                console.log(Math.round(this.valor.interpretar(arbol,tabla)))
+                console.log("ACA")
+                return Math.round(this.valor.interpretar(arbol,tabla))
             case tipoDatoCasteo.LENGTH:
                 console.log("Entro al .length")
                 try {

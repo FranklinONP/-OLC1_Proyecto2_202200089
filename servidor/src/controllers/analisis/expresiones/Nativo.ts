@@ -30,7 +30,7 @@ export default class Nativo extends Instruccion {
             let contador = Contador.getInstancia()
             let nodoNativo = `n${contador.get()}`
             let nodoValor = `n${contador.get()}`
-            let resultado = `${nodoNativo}[label=\"NATIVO\"];\n`
+            let resultado = `${nodoNativo}[label=\"TIPO NATIVO\"];\n`
             resultado += `${nodoValor}[label=\"${this.valor}\"];\n`
             resultado += `${nodoNativo}->${nodoValor};\n`
             resultado += `${anterior}->${nodoNativo};\n`

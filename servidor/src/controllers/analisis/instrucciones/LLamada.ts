@@ -21,7 +21,7 @@ export default class Llamada extends Instruccion {
     private id: string
     private params: Instruccion[]
 
-    constructor(id: string, linea:number, columna: number, params: Instruccion[]){
+    constructor(id: string, params: Instruccion[], linea:number, columna: number){
         super(new Tipo(tipoDato.VOID), linea,columna)
         this.id = id
         this.params = params
@@ -45,28 +45,11 @@ export default class Llamada extends Instruccion {
                 
             for (let i = 0; i < metodo.parametros.length; i++) {
                 let decla
-                //if(metodo.parametros[i].accion == 2) {
-                //    decla = new AsignacionArreglo(this.linea, this.col, metodo.parametros[i].tipo, metodo.parametros[i].id[0], this.params[i], false, undefined, false)
-                // }else if (metodo.parametros[i].vdd && Array.isArray(this.params[i])){
-                //     decla = new Vector2D(metodo.linea, metodo.columna, metodo.parametros[i].tipoD, metodo.parametros[i].id[0], [], [], this.params[i] ,null, false )
-                //}else{
+
                     decla = new Declaracion(metodo.parametros[i].tipo, this.linea, this.col, metodo.parametros[i].id, this.params[i])
-                //}
-                
+
                 let resultado = decla.interpretar(arbol, tablaN)
                 if(resultado instanceof Errores) return resultado
-
-                // let variable = tablaN.getVariable(busqueda.parametros[i].id[0])
-                // if(variable != null) {
-                //     if(variable.getTipo().getTipo() != this.params[i].tipoD.getTipo()) {
-                //         return new Errores("Semantico", "Parametro "+i+" es de diferente tipo al que se esperaba", this.linea, this.columna) 
-                //     }else{
-                //         variable.setValor(resultado)
-                //     }
-                // }else {
-                //     return new Errores("Semantico", "Varible con ID "+busqueda.parametros[i].id[0]+" no existe", this.linea, this.columna)
-                // }
-                
             }
             // INTERPRETAMOS LA FUNCION A LLAMAR
             let resultadoM: any = metodo.interpretar(arbol, tablaN)
@@ -74,8 +57,6 @@ export default class Llamada extends Instruccion {
 
         }else if(busqueda instanceof Funcion) {
             let funcion = <Funcion>busqueda
-            console.log("*****************************************************")
-            console.log(funcion)
             let tablaN = new tablaSimbolo(tabla)
             tablaN.setNombre("Llamada funcion: "+this.id)
 
@@ -87,17 +68,7 @@ export default class Llamada extends Instruccion {
                 if(varN instanceof Errores) return varN
                 let decla
 
-                //if(funcion.parametros[i].accion == 2) {
-                    //tipo: Tipo, linea: number, col: number, id: string , valor: Instruccion[]|any,tamano: Instruccion,bandera: boolean
-                   // decla = new AsignacionArreglo( funcion.parametros[i].tipo, 00, this.col,funcion.parametros[i].id[0], this.params[i])
-                // }else if (metodo.parametros[i].vdd && Array.isArray(this.params[i])){
-                //     decla = new Vector2D(metodo.linea, metodo.columna, metodo.parametros[i].tipoD, metodo.parametros[i].id[0], [], [], this.params[i] ,null, false )
-                //}else{
-                console.log("Paramssss")
-                console.log(this.params[i])
-                decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
-               // }
-                //let decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.columna, funcion.parametros[i].id, this.params[i])
+                    decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
 
                 let resultado = decla.interpretar(arbol, tablaN)
                 if(resultado instanceof Errores) return resultado
@@ -116,15 +87,12 @@ export default class Llamada extends Instruccion {
                 }
                 
             }
-            // this.tipoD.setTipo(funcion.tipoD.getTipo())
             let resultadoF: any = funcion.interpretar(arbol, tablaN)
             if(resultadoF instanceof Errores) return resultadoF
-            return resultadoF.valor
+            return resultadoF
         }
-        // }
     }
     getAST(anterior: string): string {
-        let resultado="Metodo"
-        return resultado
+        return ""
     }
 }

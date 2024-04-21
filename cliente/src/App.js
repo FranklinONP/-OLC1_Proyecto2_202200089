@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
+import Viz from 'viz.js';
+import {Graphviz} from "graphviz-react";
 import "./App.css";
 import Editor from "@monaco-editor/react";
 
@@ -7,7 +9,7 @@ function App() {
   const consolaRef = useRef(null);
   const [arreglo, setArreglo] = useState([]);
   const [tablaSimbolos, setTablaSimbolos] = useState([]);
-  const [ast, setAST] = useState([]);
+  const [astS, setAST] = useState("");
   const [showArregloModal, setShowArregloModal] = useState(false);
   const [showTablaSimbolosModal, setShowTablaSimbolosModal] = useState(false);
   const [showASTModal, setShowASTModal] = useState(false);
@@ -61,6 +63,26 @@ function App() {
       });
     }
 
+    function ast() {
+      fetch("http://localhost:4000/ast", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        
+      })
+        .then(response => response.json())
+        .then(data => {
+         setAST(data.AST);
+  
+         console.log(astS);
+        })
+        .catch((error) => {
+          alert("Error al generar el reporte de errores.");
+          console.error("Error:", error);
+        });
+      }
+
     function reporte_tabla() {
       fetch('http://localhost:4000/generar_reporte_tablas', {
         method: 'POST',
@@ -104,6 +126,9 @@ function App() {
   };
 
   const mostrarASTModal = () => {
+    ast()
+
+     // {ast && <Graphviz dot={ast} />}
     setShowASTModal(true);
   };
 
@@ -117,6 +142,7 @@ function App() {
   };
 
   const handleCloseASTModal = () => {
+    
     setShowASTModal(false);
   };
 
@@ -125,6 +151,7 @@ function App() {
       <div className="text-center">
         <h1>|====Organizacion de Lenguajes y Compiladores 1====|</h1>
       </div>
+      
       <br></br>
       <div className="text-center">
         <div className="container">
@@ -174,6 +201,7 @@ function App() {
                 onClick={mostrarASTModal}
               />
             </div>
+            
           </div>
         </div>
       </div>
@@ -204,6 +232,8 @@ function App() {
             </div>
           </div>
         </div>
+        <button class="btn btn-primary" onClick={ast}>Generar Arbol AST</button>
+      {astS && <Graphviz dot={astS} />}
       </div>
 
       {showArregloModal && (
@@ -253,17 +283,19 @@ function App() {
         </div>
       )}
 
-      {showASTModal && (
-        <div className="modal-container">
-          <div className="modal-content">
-            <span className="modal-close" onClick={handleCloseASTModal}>
-              &times;
-            </span>
-            <h2>AST</h2>
-            {/* Aquí puedes mostrar el AST */}
-          </div>
-        </div>
-      )}
+{showASTModal && (
+  <div className="modal-container">
+    <div className="modal-content">
+      <span className="modal-close" onClick={handleCloseASTModal}>
+        &times;
+      </span>
+      <h2>AST</h2>
+
+    </div>
+    
+  </div>
+  
+)}  
     </div>
   );
 }

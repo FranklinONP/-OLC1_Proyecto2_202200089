@@ -473,6 +473,7 @@ export default class Aritmeticas extends Instruccion {
                     //caso entero % entero
                     case tipoDato.ENTERO:
                         this.tipoDato = new Tipo(tipoDato.DECIMAL)
+                        
                         return (parseFloat(op1) % parseFloat(op2)).toFixed(2)
                     //caso entero % decimal
                     case tipoDato.DECIMAL:
@@ -521,7 +522,7 @@ export default class Aritmeticas extends Instruccion {
             let nodoNegacion = `n${contador.get()}`
             let nodoExp = `n${contador.get()}`
             resultado += `${nodoNegacion}[label=\"-\"];\n`
-            resultado += `${nodoExp}[label=\"EXPRESION\"];\n`
+            resultado += `${nodoExp}[label=\"EXPRESION ARITMETICA\"];\n`
             resultado += `${anterior}->${nodoNegacion};\n`
             resultado += `${anterior}->${nodoExp};\n`
             resultado += this.operandoUnico?.getAST(nodoExp)
@@ -531,9 +532,9 @@ export default class Aritmeticas extends Instruccion {
         let nodoOperacion = `n${contador.get()}`
         let nodoExp2 = `n${contador.get()}`
 
-        resultado += `${nodoExp1}[label=\"EXPRESION\"];\n`
+        resultado += `${nodoExp1}[label=\"EXPRESION ARITMETICA\"];\n`
         resultado += (this.operacion == Operadores.SUMA) ? (`${nodoOperacion}[label=\"+\"];\n`) : (`${nodoOperacion}[label=\"-\"];\n`)
-        resultado += `${nodoExp2}[label=\"EXPRESION\"];\n`
+        resultado += `${nodoExp2}[label=\"EXPRESION ARITMETICA\"];\n`
         resultado += `${anterior}->${nodoExp1};\n`
         resultado += `${anterior}->${nodoOperacion};\n`
         resultado += `${anterior}->${nodoExp2};\n`
