@@ -74,6 +74,8 @@ export default class Llamada extends Instruccion {
 
         }else if(busqueda instanceof Funcion) {
             let funcion = <Funcion>busqueda
+            console.log("*****************************************************")
+            console.log(funcion)
             let tablaN = new tablaSimbolo(tabla)
             tablaN.setNombre("Llamada funcion: "+this.id)
 
@@ -91,7 +93,9 @@ export default class Llamada extends Instruccion {
                 // }else if (metodo.parametros[i].vdd && Array.isArray(this.params[i])){
                 //     decla = new Vector2D(metodo.linea, metodo.columna, metodo.parametros[i].tipoD, metodo.parametros[i].id[0], [], [], this.params[i] ,null, false )
                 //}else{
-                    decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
+                console.log("Paramssss")
+                console.log(this.params[i])
+                decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
                // }
                 //let decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.columna, funcion.parametros[i].id, this.params[i])
 
@@ -115,7 +119,7 @@ export default class Llamada extends Instruccion {
             // this.tipoD.setTipo(funcion.tipoD.getTipo())
             let resultadoF: any = funcion.interpretar(arbol, tablaN)
             if(resultadoF instanceof Errores) return resultadoF
-            return resultadoF
+            return resultadoF.valor
         }
         // }
     }

@@ -9,6 +9,8 @@ import Metodo from './analisis/instrucciones/Metodo';
 import Execute from './analisis/instrucciones/Execute';
 import * as path from 'path';
 import Contador from './analisis/simbolo/Contador';
+import Funcion from './analisis/instrucciones/Funcion'
+
 
 export let listaErrores : Array<Errores> = []
 
@@ -40,13 +42,16 @@ class controller {
 
             console.log("Empieza")
             for (let i of ast.getInstrucciones()) {
-                if (i instanceof Metodo) {
-                    console.log("Metodo")
+                if (i instanceof Metodo|| i instanceof Funcion) {
+                    console.log("Metodo|Funcion")
                     console.log(i.id)
                     i.id = i.id.toLocaleLowerCase()
                     ast.addFunciones(i)
                     console.log("Sale metodo")
                 }
+                //if(i instanceof Funcion){
+
+                
                 if(i instanceof Declaracion){
                     i.interpretar(ast, tabla)
                     // manejo de errores

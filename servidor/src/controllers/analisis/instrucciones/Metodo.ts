@@ -14,7 +14,7 @@ export default class Metodo extends Instruccion {
     public instrucciones: Instruccion[]
     // public tipoS: string
 
-    constructor(id:string, tipo: Tipo, instrucciones: Instruccion[], linea:number, columna: number, parametros: any[]) {
+    constructor( tipo: Tipo,id:string, parametros: any[], instrucciones: Instruccion[], linea:number, columna: number) {
         super(tipo, linea, columna)
         this.id = id
         this.parametros = parametros

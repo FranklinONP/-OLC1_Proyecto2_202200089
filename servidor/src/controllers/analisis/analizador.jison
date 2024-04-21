@@ -217,8 +217,8 @@ return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.fir
       | RETURN PUNTOCOMA   {$$ = new Break.default(@1.first_line, @1.first_column);}
 ;
 //Metodo
-Metodo: VOID ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
-      | VOID ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default($1, $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
+Metodo: VOID ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default(new Tipo.default(Tipo.tipoDato.VOID), $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
+      | VOID ID PAR1 PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default(new Tipo.default(Tipo.tipoDato.VOID), $2, [], $6, @1.first_line, @1.first_column);console.log("222");}
 ;  
 //Funcion
 Funcion: tipos ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Funcion.default($1, $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}
