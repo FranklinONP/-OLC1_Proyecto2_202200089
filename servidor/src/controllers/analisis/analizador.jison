@@ -53,6 +53,8 @@ const Llamada =require('./instrucciones/Llamada')
 const Cast=require('./expresiones/Cast')
 //Return
 const Return=require('./instrucciones/Return')
+
+const indexController=require('../indexController')
 %}
 
 // analizador lexico
@@ -144,7 +146,7 @@ const Return=require('./instrucciones/Return')
 
 
 // Errores Lexicos
-.    {console.log("Se encontro un error lexico: "+ yytext)} // Captura cualquier otro carácter no reconocido
+.    {indexController.listaErrores.push(new Errores.default("Lexico", "No se esperaba el lexema \"" + yytext + "\" ",0, 0 ))} // Captura cualquier otro carácter no reconocido
 
 // simbolo de fin de cadena
 <<EOF>>                 return "EOF"
