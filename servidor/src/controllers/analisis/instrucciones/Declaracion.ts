@@ -76,15 +76,64 @@ export default class Declaracion extends Instruccion {
             let valorFinal = this.valor.interpretar(arbol, tabla)
 
             if (valorFinal instanceof Errores) return valorFinal
+            
+            switch (this.tipoDato.getTipo()) {
+                case tipoDato.ENTERO:
+                    if (this.valor.tipoDato.getTipo() != tipoDato.ENTERO){
+                        return new Errores("SEMANTICO", "El valor asignado no es de tipo entero", this.linea, this.col)
+                    }
+                    this.identificador.forEach(elemento => {
+                        if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                            return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                        }   
+                    });
+                case tipoDato.DECIMAL:
+                    if (this.valor.tipoDato.getTipo() != tipoDato.DECIMAL){
+                        return new Errores("SEMANTICO", "El valor asignado no es de tipo decimal", this.linea, this.col)
+                    }
+                    this.identificador.forEach(elemento => {
+                        if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                            return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                        }   
+                    });
+                case tipoDato.BOOL:
+                    if (this.valor.tipoDato.getTipo() != tipoDato.BOOL){
+                        return new Errores("SEMANTICO", "El valor asignado no es de tipo booleano", this.linea, this.col)
+                    }
+                    this.identificador.forEach(elemento => {
+                        if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                            return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                        }   
+                    });
+                case tipoDato.CARACTER:
+                    if (this.valor.tipoDato.getTipo() != tipoDato.CARACTER){
+                        return new Errores("SEMANTICO", "El valor asignado no es de tipo caracter", this.linea, this.col)
+                    }
+                    this.identificador.forEach(elemento => {
+                        if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                            return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                        }   
+                    });
+                case tipoDato.CADENA:
+                    if (this.valor.tipoDato.getTipo() != tipoDato.CADENA){
+                        return new Errores("SEMANTICO", "El valor asignado no es de tipo cadena", this.linea, this.col)
+                    }
+                    this.identificador.forEach(elemento => {
+                        if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                            return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                        }   
+                    });
+                case tipoDato.VOID:
+                    console.log("No se puede declarar una variable de tipo void")
+                    return new Errores("SEMANTICO", "No se puede declarar una variable de tipo void", this.linea, this.col)
+                default:
+                    console.log("No se puede declarar una variable de tipo void")
+                    return new Errores("SEMANTICO", "No se puede declarar una variable de tipo void", this.linea, this.col)
 
-            this.identificador.forEach(elemento => {
-                if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
-                    return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
-                }   
-            });
+            
         }
 
-    }
+    }}
     getAST(anterior: string): string {
         let result = "";
         let contador = Contador.getInstancia();
