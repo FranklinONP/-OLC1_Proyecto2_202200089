@@ -210,7 +210,7 @@ instruccion : arreglos                      {$$=$1;}
             | for                           {$$=$1;}
             | Execute                      {$$=$1;}
             | Metodo                       {$$=$1;}
-            | Llamada  PUNTOCOMA                      {$$=$1;}
+            | Llamada  PUNTOCOMA           {$$=$1;}
             | return                      {$$=$1;}
             | Funcion                     {$$=$1;}
 ;

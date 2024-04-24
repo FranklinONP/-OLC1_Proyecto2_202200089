@@ -76,8 +76,22 @@ export default class Declaracion extends Instruccion {
             let valorFinal = this.valor.interpretar(arbol, tabla)
 
             if (valorFinal instanceof Errores) return valorFinal
-            
-            switch (this.tipoDato.getTipo()) {
+            console.log(this.tipoDato.getTipo())
+            console.log(this.valor.tipoDato.getTipo())
+            console.log(valorFinal)
+
+            if (this.tipoDato.getTipo() != this.valor.tipoDato.getTipo()){
+                return new Errores("SEMANTICO", "El valor asignado no es del mismo tipo", this.linea, this.col)
+            }
+            this.identificador.forEach(elemento => {
+                if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
+                    return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
+                }   
+            });
+
+            /**
+             
+switch (this.tipoDato.getTipo()) {
                 case tipoDato.ENTERO:
                     if (this.valor.tipoDato.getTipo() != tipoDato.ENTERO){
                         return new Errores("SEMANTICO", "El valor asignado no es de tipo entero", this.linea, this.col)
@@ -89,6 +103,8 @@ export default class Declaracion extends Instruccion {
                     });
                 case tipoDato.DECIMAL:
                     if (this.valor.tipoDato.getTipo() != tipoDato.DECIMAL){
+                        console.log(valorFinal)
+                        
                         return new Errores("SEMANTICO", "El valor asignado no es de tipo decimal", this.linea, this.col)
                     }
                     this.identificador.forEach(elemento => {
@@ -133,6 +149,10 @@ export default class Declaracion extends Instruccion {
             
         }
 
+            
+             */
+            
+            
     }}
     getAST(anterior: string): string {
         let result = "";
