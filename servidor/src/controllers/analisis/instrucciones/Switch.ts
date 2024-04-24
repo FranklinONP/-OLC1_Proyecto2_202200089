@@ -29,6 +29,7 @@ export default class Switch extends Instruccion {
 
         let newTabla = new tablaSimbolo(tabla)
         newTabla.setNombre("Sentencia Switch")
+        arbol.agregarTabla(newTabla)
         console.log("Impresion del cuerpo del switch")
         console.log(this.instrucciones.length)
         console.log("---------------------------------")

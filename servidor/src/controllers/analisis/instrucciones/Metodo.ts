@@ -40,7 +40,7 @@ export default class Metodo extends Instruccion {
         
                     if(resultado instanceof Return) {
                         if(resultado.valor != null) {
-                            return new Errores("Semantico", "No se puede devolver un valor en un metodo", this.linea, this.col)
+                            return new Errores("Semantico", "Un metodo no puede contener un Return", this.linea, this.col)
                         }
                         break
         

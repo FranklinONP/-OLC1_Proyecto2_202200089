@@ -27,6 +27,7 @@ export default class While extends Instruccion {
         while (this.condicion.interpretar(arbol, tabla)) {
             let newTabla = new tablaSimbolo(tabla)
             newTabla.setNombre("Sentencia While")
+            arbol.agregarTabla(newTabla)
             for (let i of this.instrucciones) {
                 if (i instanceof Break) return;
                 let resultado = i.interpretar(arbol, newTabla)

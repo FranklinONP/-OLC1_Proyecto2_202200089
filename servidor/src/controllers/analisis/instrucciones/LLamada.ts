@@ -19,12 +19,12 @@ import { listaErrores } from "../../../controllers/indexController";
 
 export default class Llamada extends Instruccion {
     private id: string
-    private params: Instruccion[]
+    private parametros: Instruccion[]
 
-    constructor(id: string, params: Instruccion[], linea:number, columna: number){
+    constructor(id: string, parametros: Instruccion[], linea:number, columna: number){
         super(new Tipo(tipoDato.VOID), linea,columna)
         this.id = id
-        this.params = params
+        this.parametros = parametros
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
@@ -40,13 +40,13 @@ export default class Llamada extends Instruccion {
             let tablaN = new tablaSimbolo(tabla)
             tablaN.setNombre("Llamada metodo: "+this.id)
 
-            if(metodo.parametros.length < this.params.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
-            if(metodo.parametros.length > this.params.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
+            if(metodo.parametros.length < this.parametros.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
+            if(metodo.parametros.length > this.parametros.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
                 
             for (let i = 0; i < metodo.parametros.length; i++) {
                 let decla
 
-                    decla = new Declaracion(metodo.parametros[i].tipo, this.linea, this.col, metodo.parametros[i].id, this.params[i])
+                    decla = new Declaracion(metodo.parametros[i].tipo, this.linea, this.col, metodo.parametros[i].id, this.parametros[i])
 
                 let resultado = decla.interpretar(arbol, tablaN)
                 if(resultado instanceof Errores) return resultado
@@ -60,15 +60,15 @@ export default class Llamada extends Instruccion {
             let tablaN = new tablaSimbolo(tabla)
             tablaN.setNombre("Llamada funcion: "+this.id)
 
-            if(funcion.parametros.length < this.params.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
-            if(funcion.parametros.length > this.params.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
+            if(funcion.parametros.length < this.parametros.length) new Errores("Semantico", "Se recibieron mas parametros de los que se esperaban", this.linea, this.col)
+            if(funcion.parametros.length > this.parametros.length) new Errores("Semantico", "Se recibieron menos parametros de los que se esperaban", this.linea, this.col)
                 
             for (let i = 0; i < funcion.parametros.length; i++) {
-                let varN = this.params[i].interpretar(arbol, tabla)
+                let varN = this.parametros[i].interpretar(arbol, tabla)
                 if(varN instanceof Errores) return varN
                 let decla
 
-                    decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.params[i])
+                    decla = new Declaracion(funcion.parametros[i].tipo, this.linea, this.col, funcion.parametros[i].id, this.parametros[i])
 
                 let resultado = decla.interpretar(arbol, tablaN)
                 if(resultado instanceof Errores) return resultado
@@ -77,7 +77,7 @@ export default class Llamada extends Instruccion {
                 let variable = tablaN.getVariable(funcion.parametros[i].id[0])
 
                 if(variable != null) {
-                    if(variable.getTipo().getTipo() != this.params[i].tipoDato.getTipo()) {
+                    if(variable.getTipo().getTipo() != this.parametros[i].tipoDato.getTipo()) {
                         return new Errores("Semantico", "Parametro "+i+" es de diferente tipo al que se esperaba", this.linea, this.col) 
                     }else{
                         variable.setValor(varN)

@@ -286,11 +286,10 @@ function App() {
 {showASTModal && (
   <div className="modal-container">
     <div className="modal-content">
+    {astS && <Graphviz dot={astS} />}
       <span className="modal-close" onClick={handleCloseASTModal}>
         &times;
       </span>
-      <h2>AST</h2>
-
     </div>
     
   </div>

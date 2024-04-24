@@ -28,6 +28,7 @@ export default class DoWhile extends Instruccion{
         do{
             let newTabla = new tablaSimbolo(tabla)
             newTabla.setNombre("Sentencia Do-While")
+            arbol.agregarTabla(newTabla)
             for(let i of this.instrucciones){
         
                 if (i instanceof Break) return;

@@ -216,7 +216,7 @@ instruccion : arreglos                      {$$=$1;}
 ;
 //Return
 return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.first_column,$2);}
-      | RETURN PUNTOCOMA   {$$ = new Break.default(@1.first_line, @1.first_column,null);}
+      | RETURN PUNTOCOMA   {$$ = new Return.default(@1.first_line, @1.first_column,null);}
 ;
 //Metodo
 Metodo: VOID ID PAR1 pmetodo PAR2 LLAVE1 instrucciones LLAVE2 {$$=new Metodo.default(new Tipo.default(Tipo.tipoDato.VOID), $2, $4, $7, @1.first_line, @1.first_column);console.log("111");}

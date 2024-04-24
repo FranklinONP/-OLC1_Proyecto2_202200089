@@ -35,6 +35,7 @@ export default class For extends Instruccion{
 
         let newTabla = new tablaSimbolo(tabla)
         newTabla.setNombre("Sentencia For")
+        arbol.agregarTabla(newTabla)
         for(this.declaracionAsignacion.interpretar(arbol,newTabla);this.condicion.interpretar(arbol, newTabla);this.actualizacion.interpretar(arbol,newTabla)){
             for(let i of this.instrucciones){
                 if (i instanceof Break) return; 

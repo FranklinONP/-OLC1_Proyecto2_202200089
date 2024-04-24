@@ -23,6 +23,7 @@ export default class Execute extends Instruccion {
         if (busqueda instanceof Metodo) {
             let newTabla = new tablaSimbolo(arbol.getTablaGlobal())
             newTabla.setNombre("RUN")
+            arbol.agregarTabla(newTabla)
 
             /*
                 cantidad de parametros sea igual 
