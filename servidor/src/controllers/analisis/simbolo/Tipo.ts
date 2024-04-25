@@ -33,10 +33,10 @@ export default class Tipo {
 }
 
 export enum tipoDato {
-    ENTERO,
-    DECIMAL,
-    BOOL,
-    CARACTER,
-    CADENA,
-    VOID
+    ENTERO,  //0
+    DECIMAL, //1
+    BOOL,    //2   
+    CARACTER,//3
+    CADENA,  //4
+    VOID     //5
 }

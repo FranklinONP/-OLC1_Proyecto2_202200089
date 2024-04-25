@@ -6,6 +6,7 @@ import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
 import Nativo from '../expresiones/Nativo'
 
+
 export default class Casteos extends Instruccion{
     private tipoCasteo: TipoCasteo
     private valor: Instruccion
@@ -34,7 +35,14 @@ export default class Casteos extends Instruccion{
             case tipoDatoCasteo.LENGTH:
                 console.log("Entro al .length")
                 try {
-                    return this.valor.interpretar(arbol,tabla).length
+                    let v=this.valor.interpretar(arbol,tabla).length
+                    console.log("$$$$$$$")
+                    console.log(this.tipoDato)
+                    v=new Nativo(new Tipo(0),v,0,0)
+                    console.log("$$$$$$$")
+                    console.log(v)
+                    console.log(v.tipoDato.getTipo())
+                    return v.valor
                 } catch (error) {
                     //Errores.getInstance().push(new Errores("Semantico", error, this.fila, this.columna))
                     console.log("--------------------->")

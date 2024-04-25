@@ -183,7 +183,8 @@ const indexController=require('../indexController')
 %left 'expresion' 'PUNTO'
 %left 'CSTR'
 %left 'ID' 'IGUAL'
-%left 'PAR1' 
+%left 'PAR1'
+%left 'doWhile' 
 
 
 // simbolo inicial
@@ -203,10 +204,11 @@ instruccion : arreglos                      {$$=$1;}
             | declaracion                   {$$=$1;}
             | asignacion                    {$$=$1;}
             | if                            {$$=$1;}
+            | doWhile                       {$$=$1;}
             | while                         {$$=$1;}
             | break                         {$$=$1;}
             | switch                        {$$=$1;}
-            | doWhile                       {$$=$1;}
+            
             | for                           {$$=$1;}
             | Execute                      {$$=$1;}
             | Metodo                       {$$=$1;}

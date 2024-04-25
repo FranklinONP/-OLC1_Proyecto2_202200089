@@ -76,13 +76,14 @@ export default class Declaracion extends Instruccion {
             let valorFinal = this.valor.interpretar(arbol, tabla)
 
             if (valorFinal instanceof Errores) return valorFinal
+            console.log("Declaracion====================>")
             console.log(this.tipoDato.getTipo())
             console.log(this.valor.tipoDato.getTipo())
             console.log(valorFinal)
 
-            if (this.tipoDato.getTipo() != this.valor.tipoDato.getTipo()){
-                return new Errores("SEMANTICO", "El valor asignado no es del mismo tipo", this.linea, this.col)
-            }
+           // if (this.tipoDato.getTipo() != this.valor.tipoDato.getTipo()){
+           //     return new Errores("SEMANTICO", "El valor: "+valorFinal+", no puede ser asignado por incopatibilidad de tipos", this.linea, this.col)
+           // }
             this.identificador.forEach(elemento => {
                 if (!tabla.setVariable(new Simbolo(this.tipoDato, elemento, valorFinal))){
                     return new Errores("SEMANTICO", "No se puede declarar variable porque ya existia", this.linea, this.col)
