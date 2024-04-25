@@ -11,8 +11,7 @@ export default class Break extends Instruccion {
     }
 
     interpretar(arbol: Arbol, tabla: tablaSimbolo) {
-        return;
-    }
+            }
 
     getAST(anterior: string): string {
 
@@ -23,7 +22,7 @@ export default class Break extends Instruccion {
         let puntocoma = `n${contador.get()}`;
 
 
-        result += `${breakk}[label="BREAK"];\n`;
+        result += `${breakk}[label="CONTINUE"];\n`;
         result += `${puntocoma}[label=";"];\n`;
 
         result += `${anterior} -> ${breakk};\n`;

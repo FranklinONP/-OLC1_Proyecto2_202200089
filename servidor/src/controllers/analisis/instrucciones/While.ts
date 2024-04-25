@@ -4,6 +4,7 @@ import Arbol from "../simbolo/Arbol";
 import tablaSimbolo from "../simbolo/tablaSimbolos";
 import Tipo, { tipoDato } from "../simbolo/Tipo";
 import Break from "./Break";
+import Return from "./Return";
 
 export default class While extends Instruccion {
     private condicion: Instruccion
@@ -30,8 +31,10 @@ export default class While extends Instruccion {
             arbol.agregarTabla(newTabla)
             for (let i of this.instrucciones) {
                 if (i instanceof Break) return;
+                if (i instanceof Return) return
                 let resultado = i.interpretar(arbol, newTabla)
                 if (resultado instanceof Break) return;
+                if (resultado instanceof Return) return resultado
                 // los errores les quedan de tarea
             }
         }

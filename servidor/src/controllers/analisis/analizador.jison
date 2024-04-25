@@ -102,6 +102,7 @@ const indexController=require('../indexController')
 "default"               return 'DEFAULT'
 "while"                 return 'WHILE'
 "break"                 return 'BREAK'
+"continue"              return 'CONTINUE'
 "do"                    return 'DO'
 "for"                   return 'FOR'
 "++"                    return "INCREMENTO"
@@ -215,6 +216,7 @@ instruccion : arreglos                      {$$=$1;}
             | Llamada  PUNTOCOMA           {$$=$1;}
             | return                      {$$=$1;}
             | Funcion                     {$$=$1;}
+            | continue                    {$$=$1;}
 ;
 //Return
 return: RETURN expresion PUNTOCOMA {$$=new Return.default( @1.first_line, @1.first_column,$2);}
@@ -292,6 +294,9 @@ while : WHILE PAR1 expresion PAR2 LLAVE1 instrucciones LLAVE2      {$$ = new Whi
 
 break : BREAK PUNTOCOMA    {$$ = new Break.default(@1.first_line, @1.first_column);}
 ;
+continue : CONTINUE PUNTOCOMA    {$$ = new Break.default(@1.first_line, @1.first_column);}
+;
+
 
 
 //Impresion
