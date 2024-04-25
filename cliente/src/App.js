@@ -232,8 +232,7 @@ function App() {
             </div>
           </div>
         </div>
-        <button class="btn btn-primary" onClick={ast}>Generar Arbol AST</button>
-      {astS && <Graphviz dot={astS} />}
+
       </div>
 
       {showArregloModal && (
